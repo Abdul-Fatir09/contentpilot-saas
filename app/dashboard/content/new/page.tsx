@@ -16,7 +16,7 @@ export default function NewContentPage() {
     keywords: [] as string[],
     tone: "professional",
     targetAudience: "",
-    length: "medium" as const,
+    length: "medium" as "short" | "medium" | "long",
     platform: "twitter" as const,
     additionalContext: "",
   })
