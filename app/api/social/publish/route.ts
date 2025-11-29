@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       scheduledPost.platform,
       scheduledPost.socialAccount.accessToken,
       {
-        refreshToken: scheduledPost.socialAccount.refreshToken || undefined,
+        refreshToken: scheduledPost.socialAccount.refreshToken ?? undefined,
       }
     )
 
