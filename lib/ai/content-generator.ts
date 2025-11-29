@@ -114,17 +114,18 @@ function buildPrompt(params: GenerateContentParams): string {
 
 export async function generateContent(params: GenerateContentParams): Promise<ContentGenerationResult> {
   try {
-    const client = getGemini()
+    const genAI = getGemini()
     
-    if (!client) {
+    if (!genAI) {
       throw new Error('Gemini API key not configured')
     }
 
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
     const prompt = buildPrompt(params)
 
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
     const result = await model.generateContent(prompt)
-    const generatedText = result.response.text()
+    const response = await result.response
+    const generatedText = response.text()
 
     // Parse structured content based on type
     if (params.type === 'blog') {
@@ -200,18 +201,19 @@ function calculateSEOScore(content: string, keywords: string[]): number {
 
 export async function rephraseContent(content: string, newTone?: string): Promise<string> {
   try {
-    const client = getGemini()
-    if (!client) throw new Error('Gemini API key not configured')
+    const genAI = getGemini()
+    if (!genAI) throw new Error('Gemini API key not configured')
 
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
     const toneInstruction = newTone && toneInstructions[newTone] 
       ? toneInstructions[newTone] 
       : 'Maintain a similar tone.'
 
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
     const prompt = `You are an expert editor. Rephrase the following content while maintaining its core message. ${toneInstruction}\n\nContent:\n${content}`
     const result = await model.generateContent(prompt)
+    const response = await result.response
 
-    return result.response.text() || content
+    return response.text() || content
   } catch (error) {
     console.error('Error rephrasing content:', error)
     throw new Error('Failed to rephrase content.')
@@ -220,14 +222,18 @@ export async function rephraseContent(content: string, newTone?: string): Promis
 
 export async function summarizeContent(content: string, maxLength: number = 150): Promise<string> {
   try {
-    const client = getGemini()
-    if (!client) throw new Error('Gemini API key not configured')
+    const genAI = getGemini()
+    if (!genAI) throw new Error('Gemini API key not configured')
 
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
-    const prompt = `Summarize the following content in ${maxLength} words or less:\n\n${content}`
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const prompt = `You are an expert at creating concise summaries. Summarize the following content in ${maxLength} words or less:\n\n${content}`
     const result = await model.generateContent(prompt)
+    const response = await result.response
+      temperature: 0.5,
+      max_tokens: 300,
+    })
 
-    return result.response.text() || ''
+    return completion.choices[0]?.message?.content || ''
   } catch (error) {
     console.error('Error summarizing content:', error)
     throw new Error('Failed to summarize content.')
@@ -236,14 +242,15 @@ export async function summarizeContent(content: string, maxLength: number = 150)
 
 export async function generateKeywordSuggestions(topic: string, count: number = 10): Promise<string[]> {
   try {
-    const client = getGemini()
-    if (!client) throw new Error('Gemini API key not configured')
+    const genAI = getGemini()
+    if (!genAI) throw new Error('Gemini API key not configured')
 
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
-    const prompt = `Suggest ${count} relevant SEO keywords for the topic: "${topic}". Return only the keywords, one per line.`
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const prompt = `You are an SEO expert. Suggest ${count} relevant SEO keywords for the topic: "${topic}". Return only the keywords, one per line.`
     const result = await model.generateContent(prompt)
+    const response = await result.response
 
-    const keywords = result.response.text()
+    const keywords = response.text()
       ?.split('\n')
       .map((k: string) => k.replace(/^\d+\.\s*/, '').replace(/^-\s*/, '').trim())
       .filter((k: string) => k.length > 0) || []
@@ -261,14 +268,15 @@ export async function generateContentIdeas(
   count: number = 5
 ): Promise<string[]> {
   try {
-    const client = getGemini()
-    if (!client) throw new Error('Gemini API key not configured')
+    const genAI = getGemini()
+    if (!genAI) throw new Error('Gemini API key not configured')
 
-    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
-    const prompt = `Generate ${count} engaging content ideas for the ${industry} industry targeting ${targetAudience}. Return only the ideas, one per line.`
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const prompt = `You are a creative content strategist. Generate ${count} engaging content ideas for the ${industry} industry targeting ${targetAudience}. Return only the ideas, one per line.`
     const result = await model.generateContent(prompt)
+    const response = await result.response
 
-    const ideas = result.response.text()
+    const ideas = response.text()
       ?.split('\n')
       .map((i: string) => i.replace(/^\d+\.\s*/, '').replace(/^-\s*/, '').trim())
       .filter((i: string) => i.length > 0) || []
