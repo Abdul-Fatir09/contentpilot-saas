@@ -1,8 +1,15 @@
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || 'dummy-key-for-build',
-})
+let openai: OpenAI | null = null
+
+function getOpenAI() {
+  if (!openai && process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  }
+  return openai
+}
 
 export interface GenerateContentParams {
   type: 'blog' | 'social' | 'ad' | 'email' | 'product'
@@ -109,9 +116,15 @@ function buildPrompt(params: GenerateContentParams): string {
 
 export async function generateContent(params: GenerateContentParams): Promise<ContentGenerationResult> {
   try {
+    const client = getOpenAI()
+    
+    if (!client) {
+      throw new Error('OpenAI API key not configured')
+    }
+
     const prompt = buildPrompt(params)
 
-    const completion = await openai.chat.completions.create({
+    const completion = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         {
@@ -203,11 +216,14 @@ function calculateSEOScore(content: string, keywords: string[]): number {
 
 export async function rephraseContent(content: string, newTone?: string): Promise<string> {
   try {
+    const client = getOpenAI()
+    if (!client) throw new Error('OpenAI API key not configured')
+
     const toneInstruction = newTone && toneInstructions[newTone] 
       ? toneInstructions[newTone] 
       : 'Maintain a similar tone.'
 
-    const completion = await openai.chat.completions.create({
+    const completion = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         {
@@ -232,7 +248,10 @@ export async function rephraseContent(content: string, newTone?: string): Promis
 
 export async function summarizeContent(content: string, maxLength: number = 150): Promise<string> {
   try {
-    const completion = await openai.chat.completions.create({
+    const client = getOpenAI()
+    if (!client) throw new Error('OpenAI API key not configured')
+
+    const completion = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         {
@@ -257,7 +276,10 @@ export async function summarizeContent(content: string, maxLength: number = 150)
 
 export async function generateKeywordSuggestions(topic: string, count: number = 10): Promise<string[]> {
   try {
-    const completion = await openai.chat.completions.create({
+    const client = getOpenAI()
+    if (!client) throw new Error('OpenAI API key not configured')
+
+    const completion = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         {
@@ -291,7 +313,10 @@ export async function generateContentIdeas(
   count: number = 5
 ): Promise<string[]> {
   try {
-    const completion = await openai.chat.completions.create({
+    const client = getOpenAI()
+    if (!client) throw new Error('OpenAI API key not configured')
+
+    const completion = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         {
