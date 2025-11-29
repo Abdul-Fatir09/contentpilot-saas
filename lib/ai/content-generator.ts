@@ -1,14 +1,12 @@
-import OpenAI from 'openai'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
-let openai: OpenAI | null = null
+let genAI: GoogleGenerativeAI | null = null
 
-function getOpenAI() {
-  if (!openai && process.env.OPENAI_API_KEY) {
-    openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    })
+function getGemini() {
+  if (!genAI && process.env.GEMINI_API_KEY) {
+    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
   }
-  return openai
+  return genAI
 }
 
 export interface GenerateContentParams {
@@ -116,31 +114,17 @@ function buildPrompt(params: GenerateContentParams): string {
 
 export async function generateContent(params: GenerateContentParams): Promise<ContentGenerationResult> {
   try {
-    const client = getOpenAI()
+    const client = getGemini()
     
     if (!client) {
-      throw new Error('OpenAI API key not configured')
+      throw new Error('Gemini API key not configured')
     }
 
     const prompt = buildPrompt(params)
 
-    const completion = await client.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert content marketer and copywriter. Create high-quality, engaging content optimized for the specified format and audience.',
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: params.type === 'blog' && params.length === 'long' ? 2000 : 1000,
-    })
-
-    const generatedText = completion.choices[0]?.message?.content || ''
+    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const result = await model.generateContent(prompt)
+    const generatedText = result.response.text()
 
     // Parse structured content based on type
     if (params.type === 'blog') {
@@ -216,30 +200,18 @@ function calculateSEOScore(content: string, keywords: string[]): number {
 
 export async function rephraseContent(content: string, newTone?: string): Promise<string> {
   try {
-    const client = getOpenAI()
-    if (!client) throw new Error('OpenAI API key not configured')
+    const client = getGemini()
+    if (!client) throw new Error('Gemini API key not configured')
 
     const toneInstruction = newTone && toneInstructions[newTone] 
       ? toneInstructions[newTone] 
       : 'Maintain a similar tone.'
 
-    const completion = await client.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert editor. Rephrase the given content while maintaining its core message.',
-        },
-        {
-          role: 'user',
-          content: `Rephrase the following content. ${toneInstruction}\n\nContent:\n${content}`,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 1500,
-    })
+    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const prompt = `You are an expert editor. Rephrase the following content while maintaining its core message. ${toneInstruction}\n\nContent:\n${content}`
+    const result = await model.generateContent(prompt)
 
-    return completion.choices[0]?.message?.content || content
+    return result.response.text() || content
   } catch (error) {
     console.error('Error rephrasing content:', error)
     throw new Error('Failed to rephrase content.')
@@ -248,26 +220,14 @@ export async function rephraseContent(content: string, newTone?: string): Promis
 
 export async function summarizeContent(content: string, maxLength: number = 150): Promise<string> {
   try {
-    const client = getOpenAI()
-    if (!client) throw new Error('OpenAI API key not configured')
+    const client = getGemini()
+    if (!client) throw new Error('Gemini API key not configured')
 
-    const completion = await client.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert at creating concise summaries.',
-        },
-        {
-          role: 'user',
-          content: `Summarize the following content in ${maxLength} words or less:\n\n${content}`,
-        },
-      ],
-      temperature: 0.5,
-      max_tokens: 300,
-    })
+    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const prompt = `Summarize the following content in ${maxLength} words or less:\n\n${content}`
+    const result = await model.generateContent(prompt)
 
-    return completion.choices[0]?.message?.content || ''
+    return result.response.text() || ''
   } catch (error) {
     console.error('Error summarizing content:', error)
     throw new Error('Failed to summarize content.')
@@ -276,26 +236,14 @@ export async function summarizeContent(content: string, maxLength: number = 150)
 
 export async function generateKeywordSuggestions(topic: string, count: number = 10): Promise<string[]> {
   try {
-    const client = getOpenAI()
-    if (!client) throw new Error('OpenAI API key not configured')
+    const client = getGemini()
+    if (!client) throw new Error('Gemini API key not configured')
 
-    const completion = await client.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an SEO expert. Suggest relevant keywords for content optimization.',
-        },
-        {
-          role: 'user',
-          content: `Suggest ${count} relevant SEO keywords for the topic: "${topic}". Return only the keywords, one per line.`,
-        },
-      ],
-      temperature: 0.6,
-      max_tokens: 200,
-    })
+    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const prompt = `Suggest ${count} relevant SEO keywords for the topic: "${topic}". Return only the keywords, one per line.`
+    const result = await model.generateContent(prompt)
 
-    const keywords = completion.choices[0]?.message?.content
+    const keywords = result.response.text()
       ?.split('\n')
       .map((k: string) => k.replace(/^\d+\.\s*/, '').replace(/^-\s*/, '').trim())
       .filter((k: string) => k.length > 0) || []
@@ -313,26 +261,14 @@ export async function generateContentIdeas(
   count: number = 5
 ): Promise<string[]> {
   try {
-    const client = getOpenAI()
-    if (!client) throw new Error('OpenAI API key not configured')
+    const client = getGemini()
+    if (!client) throw new Error('Gemini API key not configured')
 
-    const completion = await client.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a creative content strategist. Generate engaging content ideas.',
-        },
-        {
-          role: 'user',
-          content: `Generate ${count} engaging content ideas for the ${industry} industry targeting ${targetAudience}. Return only the ideas, one per line.`,
-        },
-      ],
-      temperature: 0.8,
-      max_tokens: 400,
-    })
+    const model = client.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const prompt = `Generate ${count} engaging content ideas for the ${industry} industry targeting ${targetAudience}. Return only the ideas, one per line.`
+    const result = await model.generateContent(prompt)
 
-    const ideas = completion.choices[0]?.message?.content
+    const ideas = result.response.text()
       ?.split('\n')
       .map((i: string) => i.replace(/^\d+\.\s*/, '').replace(/^-\s*/, '').trim())
       .filter((i: string) => i.length > 0) || []
