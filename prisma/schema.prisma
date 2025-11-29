@@ -1,0 +1,321 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SubscriptionTier {
+  FREE
+  STARTER
+  PRO
+  AGENCY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+}
+
+enum ContentType {
+  BLOG_POST
+  SOCIAL_MEDIA
+  AD_COPY
+  EMAIL
+  PRODUCT_DESCRIPTION
+}
+
+enum Platform {
+  TWITTER
+  FACEBOOK
+  LINKEDIN
+  INSTAGRAM
+  EMAIL
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  subscription  Subscription?
+  brandProfile  BrandProfile?
+  contents      Content[]
+  socialAccounts SocialAccount[]
+  folders       Folder[]
+  teamMembers   TeamMember[]
+  invitations   Invitation[]
+  analytics     Analytics[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  tier                 SubscriptionTier   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+  paddleSubscriptionId String?            @unique
+  paddleCustomerId     String?
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  dailyGenerations     Int                @default(0)
+  dailyGenerationsLimit Int               @default(5)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoices Invoice[]
+
+  @@map("subscriptions")
+}
+
+model Invoice {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  paddleInvoiceId String  @unique
+  amount         Float
+  currency       String
+  status         String
+  invoiceUrl     String?
+  paidAt         DateTime?
+  createdAt      DateTime @default(now())
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@map("invoices")
+}
+
+model BrandProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  brandName      String?
+  tone           String?  // e.g., "professional", "casual", "friendly"
+  targetAudience String?
+  industry       String?
+  keywords       String[] // Array of keywords
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("brand_profiles")
+}
+
+model Content {
+  id          String      @id @default(cuid())
+  userId      String
+  folderId    String?
+  type        ContentType
+  title       String
+  content     String      @db.Text
+  keywords    String[]
+  seoScore    Int?
+  metaTitle   String?
+  metaDescription String?
+  status      PostStatus  @default(DRAFT)
+  scheduledFor DateTime?
+  publishedAt  DateTime?
+  tags        String[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder       Folder?        @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  socialPosts  SocialPost[]
+  abTests      ABTest[]
+
+  @@index([userId])
+  @@index([folderId])
+  @@map("contents")
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  color     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contents Content[]
+
+  @@map("folders")
+}
+
+model SocialAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  platform     Platform
+  accountName  String
+  accessToken  String   @db.Text
+  refreshToken String?  @db.Text
+  expiresAt    DateTime?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  socialPosts SocialPost[]
+
+  @@unique([userId, platform, accountName])
+  @@map("social_accounts")
+}
+
+model SocialPost {
+  id              String     @id @default(cuid())
+  contentId       String
+  socialAccountId String
+  platform        Platform
+  postText        String     @db.Text
+  mediaUrls       String[]
+  status          PostStatus @default(SCHEDULED)
+  scheduledFor    DateTime
+  publishedAt     DateTime?
+  platformPostId  String?
+  errorMessage    String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  content       Content       @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  socialAccount SocialAccount @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+  analytics     Analytics[]
+
+  @@index([scheduledFor])
+  @@index([status])
+  @@map("social_posts")
+}
+
+model Analytics {
+  id           String   @id @default(cuid())
+  userId       String
+  socialPostId String?
+  platform     Platform
+  impressions  Int      @default(0)
+  clicks       Int      @default(0)
+  likes        Int      @default(0)
+  shares       Int      @default(0)
+  comments     Int      @default(0)
+  engagement   Float    @default(0)
+  date         DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  socialPost SocialPost? @relation(fields: [socialPostId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@map("analytics")
+}
+
+model ABTest {
+  id         String   @id @default(cuid())
+  contentId  String
+  variantA   String   @db.Text
+  variantB   String   @db.Text
+  winnerVariant String?
+  impressionsA Int    @default(0)
+  impressionsB Int    @default(0)
+  clicksA      Int    @default(0)
+  clicksB      Int    @default(0)
+  isActive     Boolean @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  content Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@map("ab_tests")
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  userId    String
+  teamRole  String   // e.g., "editor", "viewer", "admin"
+  canEdit   Boolean  @default(false)
+  canPublish Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("team_members")
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  email     String
+  userId    String   // User who sent the invitation
+  teamRole  String
+  token     String   @unique
+  expiresAt DateTime
+  accepted  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("invitations")
+}
