@@ -229,11 +229,8 @@ export async function summarizeContent(content: string, maxLength: number = 150)
     const prompt = `You are an expert at creating concise summaries. Summarize the following content in ${maxLength} words or less:\n\n${content}`
     const result = await model.generateContent(prompt)
     const response = await result.response
-      temperature: 0.5,
-      max_tokens: 300,
-    })
 
-    return completion.choices[0]?.message?.content || ''
+    return response.text() || ''
   } catch (error) {
     console.error('Error summarizing content:', error)
     throw new Error('Failed to summarize content.')
