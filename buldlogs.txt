@@ -1,0 +1,53 @@
+18:40:18.450 Running build in Washington, D.C., USA (East) – iad1
+18:40:18.451 Build machine configuration: 2 cores, 8 GB
+18:40:18.583 Cloning github.com/Abdul-Fatir09/contentpilot-saas (Branch: main, Commit: 6c07ff7)
+18:40:18.584 Previous build caches not available.
+18:40:18.782 Cloning completed: 198.000ms
+18:40:19.181 Running "vercel build"
+18:40:19.581 Vercel CLI 48.12.0
+18:40:20.001 Running "install" command: `npm install`...
+18:40:42.042 
+18:40:42.043 added 443 packages, and audited 444 packages in 22s
+18:40:42.043 
+18:40:42.043 159 packages are looking for funding
+18:40:42.044   run `npm fund` for details
+18:40:42.044 
+18:40:42.044 found 0 vulnerabilities
+18:40:42.088 Detected Next.js version: 16.0.4
+18:40:42.089 Running "prisma generate && next build"
+18:40:42.773 Prisma schema loaded from prisma/schema.prisma
+18:40:43.234 
+18:40:43.235 ✔ Generated Prisma Client (v6.8.0) to ./node_modules/@prisma/client in 102ms
+18:40:43.235 
+18:40:43.235 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+18:40:43.235 
+18:40:43.235 Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+18:40:43.235 
+18:40:43.581 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+18:40:44.117 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+18:40:44.118 This information is used to shape Next.js' roadmap and prioritize features.
+18:40:44.118 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+18:40:44.118 https://nextjs.org/telemetry
+18:40:44.118 
+18:40:44.130    ▲ Next.js 16.0.4 (Turbopack)
+18:40:44.131 
+18:40:44.134  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+18:40:44.173    Creating an optimized production build ...
+18:40:44.344 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+18:40:56.118  ✓ Compiled successfully in 11.4s
+18:40:56.120    Running TypeScript ...
+18:41:02.201 Failed to compile.
+18:41:02.202 
+18:41:02.202 ./app/api/content/generate/route.ts:81:7
+18:41:02.202 Type error: Type 'string | null | undefined' is not assignable to type 'string | undefined'.
+18:41:02.202   Type 'null' is not assignable to type 'string | undefined'.
+18:41:02.202 
+18:41:02.202 [0m [90m 79 |[39m       keywords[33m:[39m validatedData[33m.[39mkeywords [33m||[39m brandProfile[33m?[39m[33m.[39mkeywords [33m||[39m [][33m,[39m
+18:41:02.202  [90m 80 |[39m       tone[33m:[39m validatedData[33m.[39mtone [33m||[39m brandProfile[33m?[39m[33m.[39mtone [33m||[39m [32m'professional'[39m[33m,[39m
+18:41:02.202 [31m[1m>[22m[39m[90m 81 |[39m       targetAudience[33m:[39m validatedData[33m.[39mtargetAudience [33m||[39m brandProfile[33m?[39m[33m.[39mtargetAudience[33m,[39m
+18:41:02.202  [90m    |[39m       [31m[1m^[22m[39m
+18:41:02.203  [90m 82 |[39m       length[33m:[39m validatedData[33m.[39mlength [33m||[39m [32m'medium'[39m[33m,[39m
+18:41:02.203  [90m 83 |[39m       platform[33m:[39m validatedData[33m.[39mplatform[33m,[39m
+18:41:02.203  [90m 84 |[39m       additionalContext[33m:[39m validatedData[33m.[39madditionalContext[33m,[39m[0m
+18:41:02.238 Next.js build worker exited with code: 1 and signal: null
+18:41:02.268 Error: Command "prisma generate && next build" exited with 1

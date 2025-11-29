@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
       topic: validatedData.topic,
       keywords: validatedData.keywords || brandProfile?.keywords || [],
       tone: validatedData.tone || brandProfile?.tone || 'professional',
-      targetAudience: validatedData.targetAudience || brandProfile?.targetAudience,
+      targetAudience: validatedData.targetAudience || brandProfile?.targetAudience || undefined,
       length: validatedData.length || 'medium',
       platform: validatedData.platform,
       additionalContext: validatedData.additionalContext,
