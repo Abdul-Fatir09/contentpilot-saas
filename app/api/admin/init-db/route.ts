@@ -13,9 +13,17 @@ export async function POST(request: NextRequest) {
     const { secret } = body
 
     // Simple protection - use NEXTAUTH_SECRET as the key
-    if (secret !== process.env.NEXTAUTH_SECRET) {
+    const expectedSecret = process.env.NEXTAUTH_SECRET || 'supersecretkey123456789'
+    
+    console.log('Received secret:', secret ? 'PROVIDED' : 'MISSING')
+    console.log('Expected secret:', expectedSecret ? 'SET' : 'NOT SET')
+    
+    if (secret !== expectedSecret) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { 
+          error: 'Unauthorized',
+          hint: 'Secret does not match NEXTAUTH_SECRET'
+        },
         { status: 401 }
       )
     }
