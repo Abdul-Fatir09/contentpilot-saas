@@ -11,13 +11,13 @@ export default function NewContentPage() {
   const [error, setError] = useState("")
   
   const [formData, setFormData] = useState({
-    type: "blog" as const,
+    type: "blog" as "blog" | "social" | "ad" | "email" | "product",
     topic: "",
     keywords: [] as string[],
     tone: "professional",
     targetAudience: "",
     length: "medium" as "short" | "medium" | "long",
-    platform: "twitter" as const,
+    platform: "twitter" as "twitter" | "facebook" | "linkedin" | "instagram",
     additionalContext: "",
   })
 
