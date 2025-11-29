@@ -287,7 +287,7 @@ export class InstagramService {
 export function getPlatformService(
   platform: string,
   accessToken: string,
-  additionalParams?: Record<string, string>
+  additionalParams?: Record<string, string | undefined>
 ) {
   switch (platform.toLowerCase()) {
     case 'twitter':
