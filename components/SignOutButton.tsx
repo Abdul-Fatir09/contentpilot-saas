@@ -5,7 +5,10 @@ import { LogOut } from "lucide-react"
 
 export function SignOutButton() {
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/auth/signin" })
+    await signOut({ 
+      callbackUrl: "/auth/signin",
+      redirect: true 
+    })
   }
 
   return (
