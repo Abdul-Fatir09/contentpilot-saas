@@ -2,6 +2,90 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server"
 
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await auth()
+    
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const { id } = await params
+
+    const content = await prisma.content.findUnique({
+      where: { id },
+      include: {
+        folder: true,
+      },
+    })
+
+    if (!content) {
+      return NextResponse.json({ error: "Content not found" }, { status: 404 })
+    }
+
+    if (content.userId !== session.user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    }
+
+    return NextResponse.json(content)
+  } catch (error) {
+    console.error("Error fetching content:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch content" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await auth()
+    
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const { id } = await params
+    const body = await req.json()
+
+    const content = await prisma.content.findUnique({
+      where: { id },
+    })
+
+    if (!content) {
+      return NextResponse.json({ error: "Content not found" }, { status: 404 })
+    }
+
+    if (content.userId !== session.user.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    }
+
+    const updatedContent = await prisma.content.update({
+      where: { id },
+      data: {
+        title: body.title,
+        content: body.content,
+        keywords: body.keywords || [],
+        updatedAt: new Date(),
+      },
+    })
+
+    return NextResponse.json(updatedContent)
+  } catch (error) {
+    console.error("Error updating content:", error)
+    return NextResponse.json(
+      { error: "Failed to update content" },
+      { status: 500 }
+    )
+  }
+}
+
 export async function DELETE(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
