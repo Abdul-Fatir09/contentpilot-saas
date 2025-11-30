@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -13,8 +13,10 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { id } = await params
+
     const content = await prisma.content.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!content) {
@@ -26,7 +28,7 @@ export async function DELETE(
     }
 
     await prisma.content.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ success: true })
