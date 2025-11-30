@@ -2,8 +2,10 @@
 
 import { User, CreditCard, Bell, Shield, Zap, X } from 'lucide-react';
 import { useState } from 'react';
+import { useToast } from '@/components/ToastContainer';
 
 export default function SettingsPage() {
+  const toast = useToast();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -42,13 +44,14 @@ export default function SettingsPage() {
         return;
       }
 
-      alert('Password changed successfully!');
+      toast.success('Password changed successfully!');
       setShowPasswordModal(false);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (err) {
       setPasswordError('An error occurred. Please try again.');
+      toast.error('Failed to change password');
     } finally {
       setPasswordLoading(false);
     }
@@ -99,12 +102,12 @@ export default function SettingsPage() {
                 />
                 <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
               </div>
-
               <button 
-                onClick={() => alert('Profile updated! (This will save to database in production)')}
+                onClick={() => toast.info('Profile update functionality will save to database')}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
               >
                 Save Changes
+              </button>anges
               </button>
             </div>
           </div>

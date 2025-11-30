@@ -2,8 +2,10 @@
 
 import { Check, Sparkles, Zap, Crown, Rocket } from 'lucide-react';
 import { useState } from 'react';
+import { useToast } from '@/components/ToastContainer';
 
 export default function PricingPage() {
+  const toast = useToast();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
 
   const plans = [
@@ -101,11 +103,11 @@ export default function PricingPage() {
 
   const handleUpgrade = (planName: string) => {
     if (planName === 'Free') {
-      alert('You are currently on the Free plan');
+      toast.info('You are currently on the Free plan');
     } else if (planName === 'Enterprise') {
-      alert('Contact our sales team at sales@contentpilot.com for Enterprise pricing');
+      toast.info('Contact our sales team at sales@contentpilot.com for Enterprise pricing');
     } else {
-      alert(`Upgrade to ${planName} plan - Payment integration coming soon!`);
+      toast.success(`Upgrade to ${planName} plan - Payment integration coming soon!`);
     }
   };
 

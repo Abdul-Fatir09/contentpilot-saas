@@ -3,10 +3,12 @@
 import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Sparkles, FileText, Twitter, Mail, ShoppingBag, Megaphone } from "lucide-react"
+import { useToast } from "@/components/ToastContainer"
 
 function NewContentForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const toast = useToast()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   
@@ -86,15 +88,20 @@ function NewContentForm() {
       }
 
       setGeneratedContent(data.content)
+      toast.success("Content generated successfully!")
     } catch (err: any) {
       setError(err.message)
+      toast.error(err.message || "Failed to generate content")
     } finally {
       setLoading(false)
     }
   }
 
   const handleSaveAndContinue = () => {
-    router.push("/dashboard/content")
+    toast.success("Content saved! Redirecting to library...")
+    setTimeout(() => {
+      router.push("/dashboard/content")
+    }, 1000)
   }
 
   return (

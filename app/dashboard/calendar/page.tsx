@@ -2,8 +2,10 @@
 
 import { Calendar, Clock, Plus } from 'lucide-react';
 import { useState } from 'react';
+import { useToast } from '@/components/ToastContainer';
 
 export default function CalendarPage() {
+  const toast = useToast();
   const [currentDate] = useState(new Date());
 
   return (
@@ -17,7 +19,7 @@ export default function CalendarPage() {
           </p>
         </div>
         <button 
-          onClick={() => alert('Schedule post functionality coming soon! This will open a scheduling modal.')}
+          onClick={() => toast.info('Schedule post functionality coming soon!')}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
         >
           <Plus className="w-4 h-4" />
@@ -33,19 +35,19 @@ export default function CalendarPage() {
           </h2>
           <div className="flex gap-2">
             <button 
-              onClick={() => alert('Navigate to previous month')}
+              onClick={() => toast.info('Calendar navigation coming soon')}
               className="px-3 py-1 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
             >
               Previous
             </button>
             <button 
-              onClick={() => alert('Navigate to today')}
+              onClick={() => toast.info('Jump to today')}
               className="px-3 py-1 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
             >
               Today
             </button>
             <button 
-              onClick={() => alert('Navigate to next month')}
+              onClick={() => toast.info('Calendar navigation coming soon')}
               className="px-3 py-1 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
             >
               Next

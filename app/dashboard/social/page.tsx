@@ -1,8 +1,10 @@
 'use client';
 
 import { Twitter, Facebook, Linkedin, Instagram, Plus, Settings } from 'lucide-react';
+import { useToast } from '@/components/ToastContainer';
 
 export default function SocialAccountsPage() {
+  const toast = useToast();
   const platforms = [
     {
       name: 'Twitter',
@@ -76,9 +78,9 @@ export default function SocialAccountsPage() {
               <button
                 onClick={() => {
                   if (platform.connected) {
-                    alert(`Disconnecting ${platform.name}...`);
+                    toast.warning(`Disconnecting ${platform.name}...`);
                   } else {
-                    alert(`To connect ${platform.name}, you'll need to configure OAuth credentials. Check SETUP.md for instructions.`);
+                    toast.info(`To connect ${platform.name}, configure OAuth credentials first`);
                   }
                 }}
                 className={`w-full py-2 px-4 rounded-lg font-medium transition-colors cursor-pointer ${

@@ -4,6 +4,9 @@ import Link from "next/link"
 import { FileText, Eye, Trash2 } from "lucide-react"
 import { formatDate } from "@/lib/utils"
 import type { Content, Folder } from "@prisma/client"
+import { useToast } from "./ToastContainer"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 type ContentWithRelations = Content & {
   folder: Folder | null
@@ -16,7 +19,11 @@ interface ContentListProps {
   contents: ContentWithRelations[]
 }
 
-export default function ContentList({ contents }: ContentListProps) {
+export default function ContentList({ contents: initialContents }: ContentListProps) {
+  const [contents, setContents] = useState(initialContents)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const toast = useToast()
+  const router = useRouter()
   const contentTypeLabels: Record<string, string> = {
     BLOG_POST: "Blog Post",
     SOCIAL_MEDIA: "Social Media",
@@ -34,8 +41,33 @@ export default function ContentList({ contents }: ContentListProps) {
   }
 
   const handleDelete = async (contentId: string) => {
-    if (confirm("Are you sure you want to delete this content?")) {
-      alert("Delete functionality coming soon!")
+    if (!confirm("Are you sure you want to delete this content? This action cannot be undone.")) {
+      return
+    }
+
+    setDeletingId(contentId)
+
+    try {
+      const response = await fetch(`/api/content/${contentId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to delete content')
+      }
+
+      // Remove from local state
+      setContents(contents.filter(c => c.id !== contentId))
+      toast.success('Content deleted successfully!')
+      
+      // Refresh the page data
+      router.refresh()
+    } catch (error: any) {
+      console.error('Delete error:', error)
+      toast.error(error.message || 'Failed to delete content')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -79,13 +111,18 @@ export default function ContentList({ contents }: ContentListProps) {
               <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                 {content.title}
               </h3>
-            </div>
-          </div>
-
-          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-            {content.content}
-          </p>
-
+              <button
+                onClick={() => handleDelete(content.id)}
+                disabled={deletingId === content.id}
+                className="rounded-lg border border-red-300 p-2 hover:bg-red-50 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Delete"
+              >
+                {deletingId === content.id ? (
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
+                ) : (
+                  <Trash2 className="h-5 w-5 text-red-600" />
+                )}
+              </button>
           <div className="flex items-center justify-between pt-4 border-t border-gray-200">
             <div className="flex items-center gap-4 text-xs text-gray-500">
               <div className="flex items-center gap-1">

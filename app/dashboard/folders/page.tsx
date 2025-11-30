@@ -2,8 +2,10 @@
 
 import { Folder, Plus, Edit2, Trash2, FolderOpen } from 'lucide-react';
 import { useState } from 'react';
+import { useToast } from '@/components/ToastContainer';
 
 export default function FoldersPage() {
+  const toast = useToast();
   const [folders, setFolders] = useState<any[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
@@ -11,7 +13,10 @@ export default function FoldersPage() {
   const [newFolderDescription, setNewFolderDescription] = useState('');
 
   const handleCreateFolder = () => {
-    if (!newFolderName.trim()) return;
+    if (!newFolderName.trim()) {
+      toast.warning('Please enter a folder name');
+      return;
+    }
     
     const newFolder = {
       id: Date.now().toString(),
@@ -27,11 +32,14 @@ export default function FoldersPage() {
     setNewFolderDescription('');
     setNewFolderColor('blue');
     setShowCreateModal(false);
+    toast.success(`Folder "${newFolderName}" created successfully!`);
   };
 
   const handleDeleteFolder = (id: string) => {
     if (confirm('Are you sure you want to delete this folder?')) {
+      const folder = folders.find(f => f.id === id);
       setFolders(folders.filter(f => f.id !== id));
+      toast.success(`Folder "${folder?.name}" deleted successfully!`);
     }
   };
 
