@@ -107,7 +107,6 @@ export default function SettingsPage() {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
               >
                 Save Changes
-              </button>anges
               </button>
             </div>
           </div>

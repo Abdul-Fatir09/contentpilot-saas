@@ -111,18 +111,13 @@ export default function ContentList({ contents: initialContents }: ContentListPr
               <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                 {content.title}
               </h3>
-              <button
-                onClick={() => handleDelete(content.id)}
-                disabled={deletingId === content.id}
-                className="rounded-lg border border-red-300 p-2 hover:bg-red-50 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Delete"
-              >
-                {deletingId === content.id ? (
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
-                ) : (
-                  <Trash2 className="h-5 w-5 text-red-600" />
-                )}
-              </button>
+            </div>
+          </div>
+
+          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+            {content.content}
+          </p>
+
           <div className="flex items-center justify-between pt-4 border-t border-gray-200">
             <div className="flex items-center gap-4 text-xs text-gray-500">
               <div className="flex items-center gap-1">
@@ -143,10 +138,15 @@ export default function ContentList({ contents: initialContents }: ContentListPr
               </Link>
               <button
                 onClick={() => handleDelete(content.id)}
-                className="rounded-lg border border-red-300 p-2 hover:bg-red-50 cursor-pointer transition-colors"
+                disabled={deletingId === content.id}
+                className="rounded-lg border border-red-300 p-2 hover:bg-red-50 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Delete"
               >
-                <Trash2 className="h-5 w-5 text-red-600" />
+                {deletingId === content.id ? (
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
+                ) : (
+                  <Trash2 className="h-5 w-5 text-red-600" />
+                )}
               </button>
             </div>
           </div>

@@ -1,0 +1,95 @@
+22:15:55.409 Running build in Washington, D.C., USA (East) – iad1
+22:15:55.410 Build machine configuration: 2 cores, 8 GB
+22:15:55.665 Cloning github.com/Abdul-Fatir09/contentpilot-saas (Branch: main, Commit: 9e5735f)
+22:15:57.265 Cloning completed: 1.599s
+22:15:58.471 Restored build cache from previous deployment (3YD6rmSFXFGt3QZZ2YFAao4pkdaQ)
+22:15:59.221 Running "vercel build"
+22:15:59.626 Vercel CLI 48.12.0
+22:16:00.053 Running "install" command: `npm install`...
+22:16:01.772 
+22:16:01.773 up to date, audited 443 packages in 1s
+22:16:01.773 
+22:16:01.773 159 packages are looking for funding
+22:16:01.774   run `npm fund` for details
+22:16:01.774 
+22:16:01.774 found 0 vulnerabilities
+22:16:01.805 Detected Next.js version: 16.0.4
+22:16:01.806 Running "prisma generate && next build"
+22:16:02.530 Prisma schema loaded from prisma/schema.prisma
+22:16:02.939 
+22:16:02.941 ✔ Generated Prisma Client (v6.8.0) to ./node_modules/@prisma/client in 216ms
+22:16:02.941 
+22:16:02.942 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+22:16:02.942 
+22:16:02.942 Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+22:16:02.942 
+22:16:03.351 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+22:16:04.116    ▲ Next.js 16.0.4 (Turbopack)
+22:16:04.117 
+22:16:04.125  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+22:16:04.162    Creating an optimized production build ...
+22:16:04.359 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+22:16:18.264 
+22:16:18.266 > Build error occurred
+22:16:18.268 Error: Turbopack build failed with 4 errors:
+22:16:18.269 ./app/api/content/[id]/route.ts
+22:16:18.269 Reading source code for parsing failed
+22:16:18.269 An unexpected error happened while trying to read the source code to parse: failed to convert rope into string
+22:16:18.270 
+22:16:18.270 Caused by:
+22:16:18.270 - invalid utf-8 sequence of 1 bytes from index 0
+22:16:18.270 
+22:16:18.270 
+22:16:18.271 ./app/dashboard/settings/page.tsx:111:24
+22:16:18.271 Parsing ecmascript source code failed
+22:16:18.271 [0m [90m 109 |[39m                 [33mSave[39m [33mChanges[39m
+22:16:18.271  [90m 110 |[39m               [33m<[39m[33m/[39m[33mbutton[39m[33m>[39manges
+22:16:18.271 [31m[1m>[22m[39m[90m 111 |[39m               [33m<[39m[33m/[39m[33mbutton[39m[33m>[39m
+22:16:18.272  [90m     |[39m                        [31m[1m^[22m[39m
+22:16:18.272 [31m[1m>[22m[39m[90m 112 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+22:16:18.272  [90m     |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+22:16:18.273  [90m 113 |[39m           [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+22:16:18.273  [90m 114 |[39m
+22:16:18.273  [90m 115 |[39m           {[90m/* Subscription */[39m}[0m
+22:16:18.273 
+22:16:18.273 Expected '</', got 'jsx text (
+22:16:18.273             )'
+22:16:18.274 
+22:16:18.274 
+22:16:18.274 ./components/ContentList.tsx:154:9
+22:16:18.274 Parsing ecmascript source code failed
+22:16:18.274 [0m [90m 152 |[39m           [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+22:16:18.274  [90m 153 |[39m         [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+22:16:18.275 [31m[1m>[22m[39m[90m 154 |[39m       ))}
+22:16:18.275  [90m     |[39m         [31m[1m^[22m[39m
+22:16:18.275  [90m 155 |[39m     [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+22:16:18.275  [90m 156 |[39m   )
+22:16:18.275  [90m 157 |[39m }[0m
+22:16:18.276 
+22:16:18.276 Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+22:16:18.276 
+22:16:18.276 Import trace:
+22:16:18.276   Server Component:
+22:16:18.276     ./components/ContentList.tsx
+22:16:18.282     ./app/dashboard/content/page.tsx
+22:16:18.283 
+22:16:18.283 
+22:16:18.283 ./components/ContentList.tsx:157:1
+22:16:18.283 Parsing ecmascript source code failed
+22:16:18.283 [0m [90m 155 |[39m     [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+22:16:18.283  [90m 156 |[39m   )
+22:16:18.285 [31m[1m>[22m[39m[90m 157 |[39m }
+22:16:18.285  [90m     |[39m [31m[1m^[22m[39m[0m
+22:16:18.285 
+22:16:18.285 Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+22:16:18.285 
+22:16:18.285 Import trace:
+22:16:18.285   Server Component:
+22:16:18.286     ./components/ContentList.tsx
+22:16:18.286     ./app/dashboard/content/page.tsx
+22:16:18.286 
+22:16:18.286 
+22:16:18.286     at <unknown> (./app/dashboard/settings/page.tsx:111:24)
+22:16:18.286     at <unknown> (./components/ContentList.tsx:154:9)
+22:16:18.287     at <unknown> (./components/ContentList.tsx:157:1)
+22:16:18.328 Error: Command "prisma generate && next build" exited with 1
