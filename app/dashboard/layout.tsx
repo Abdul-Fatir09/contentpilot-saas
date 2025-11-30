@@ -1,7 +1,8 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
-import { LayoutDashboard, FileText, Calendar, BarChart3, Settings, Folder, Zap, LogOut, Share2, CreditCard } from "lucide-react"
+import { LayoutDashboard, FileText, Calendar, BarChart3, Settings, Folder, Zap, Share2, CreditCard } from "lucide-react"
 import Link from "next/link"
+import { SignOutButton } from "@/components/SignOutButton"
 
 export default async function DashboardLayout({
   children,
@@ -69,13 +70,7 @@ export default async function DashboardLayout({
               <p className="text-xs text-gray-400 truncate">{session.user?.email}</p>
             </div>
           </div>
-          <Link
-            href="/api/auth/signout"
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-400 hover:bg-slate-800 hover:text-white transition-colors w-full"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </Link>
+          <SignOutButton />
         </div>
       </aside>
 
