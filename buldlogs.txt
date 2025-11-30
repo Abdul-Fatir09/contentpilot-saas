@@ -1,69 +1,57 @@
-19:09:28.073 Running build in Washington, D.C., USA (East) – iad1
-19:09:28.074 Build machine configuration: 2 cores, 8 GB
-19:09:28.210 Cloning github.com/Abdul-Fatir09/contentpilot-saas (Branch: main, Commit: da21942)
-19:09:28.211 Previous build caches not available.
-19:09:28.453 Cloning completed: 243.000ms
-19:09:29.008 Running "vercel build"
-19:09:29.423 Vercel CLI 48.12.0
-19:09:29.764 Running "install" command: `npm install`...
-19:09:51.940 
-19:09:51.941 added 441 packages, and audited 442 packages in 22s
-19:09:51.942 
-19:09:51.942 159 packages are looking for funding
-19:09:51.942   run `npm fund` for details
-19:09:51.943 
-19:09:51.943 found 0 vulnerabilities
-19:09:51.988 Detected Next.js version: 16.0.4
-19:09:51.989 Running "prisma generate && next build"
-19:09:52.738 Prisma schema loaded from prisma/schema.prisma
-19:09:53.242 
-19:09:53.242 ✔ Generated Prisma Client (v6.8.0) to ./node_modules/@prisma/client in 106ms
-19:09:53.243 
-19:09:53.243 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
-19:09:53.243 
-19:09:53.243 Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
-19:09:53.243 
-19:09:53.605 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-19:09:54.154 Attention: Next.js now collects completely anonymous telemetry regarding usage.
-19:09:54.154 This information is used to shape Next.js' roadmap and prioritize features.
-19:09:54.155 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-19:09:54.155 https://nextjs.org/telemetry
-19:09:54.155 
-19:09:54.166    ▲ Next.js 16.0.4 (Turbopack)
-19:09:54.166 
-19:09:54.174  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-19:09:54.205    Creating an optimized production build ...
-19:09:54.372 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-19:10:07.589  ✓ Compiled successfully in 12.9s
-19:10:07.592    Running TypeScript ...
-19:10:14.133    Collecting page data using 1 worker ...
-19:10:14.257 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-19:10:14.520 Error: Missing credentials. Please pass an `apiKey`, or set the `OPENAI_API_KEY` environment variable.
-19:10:14.520     at new na (.next/server/chunks/lib_ai_content-generator_ts_696cff73._.js:8:46792)
-19:10:14.520     at module evaluation (.next/server/chunks/lib_ai_content-generator_ts_696cff73._.js:8:62452)
-19:10:14.520     at instantiateModule (.next/server/chunks/[turbopack]_runtime.js:715:9)
-19:10:14.521     at getOrInstantiateModuleFromParent (.next/server/chunks/[turbopack]_runtime.js:738:12)
-19:10:14.521     at Context.esmImport [as i] (.next/server/chunks/[turbopack]_runtime.js:228:20)
-19:10:14.521     at module evaluation (.next/server/chunks/[root-of-the-server]__57cbac77._.js:1:1728)
-19:10:14.521     at instantiateModule (.next/server/chunks/[turbopack]_runtime.js:715:9)
-19:10:14.521     at instantiateRuntimeModule (.next/server/chunks/[turbopack]_runtime.js:743:12)
-19:10:14.521     at getOrInstantiateRuntimeModule (.next/server/chunks/[turbopack]_runtime.js:756:12)
-19:10:14.521     at Object.m (.next/server/chunks/[turbopack]_runtime.js:765:18)
-19:10:14.551 Error: Missing credentials. Please pass an `apiKey`, or set the `OPENAI_API_KEY` environment variable.
-19:10:14.552     at new na (.next/server/chunks/lib_ai_content-generator_ts_696cff73._.js:8:46792)
-19:10:14.552     at module evaluation (.next/server/chunks/lib_ai_content-generator_ts_696cff73._.js:8:62452)
-19:10:14.553     at instantiateModule (.next/server/chunks/[turbopack]_runtime.js:715:9)
-19:10:14.553     at getOrInstantiateModuleFromParent (.next/server/chunks/[turbopack]_runtime.js:738:12)
-19:10:14.553     at Context.esmImport [as i] (.next/server/chunks/[turbopack]_runtime.js:228:20)
-19:10:14.553     at module evaluation (.next/server/chunks/[root-of-the-server]__57cbac77._.js:1:1728)
-19:10:14.553     at instantiateModule (.next/server/chunks/[turbopack]_runtime.js:715:9)
-19:10:14.554     at instantiateRuntimeModule (.next/server/chunks/[turbopack]_runtime.js:743:12)
-19:10:14.555     at getOrInstantiateRuntimeModule (.next/server/chunks/[turbopack]_runtime.js:756:12)
-19:10:14.556     at Object.m (.next/server/chunks/[turbopack]_runtime.js:765:18)
-19:10:15.027 
-19:10:15.028 > Build error occurred
-19:10:15.030 Error: Failed to collect page data for /api/ai/tools
-19:10:15.031     at ignore-listed frames {
-19:10:15.031   type: 'Error'
-19:10:15.031 }
-19:10:15.079 Error: Command "prisma generate && next build" exited with 1
+12:55:48.258 Running build in Washington, D.C., USA (East) – iad1
+12:55:48.259 Build machine configuration: 2 cores, 8 GB
+12:55:48.399 Cloning github.com/Abdul-Fatir09/contentpilot-saas (Branch: main, Commit: 092b7da)
+12:55:48.695 Cloning completed: 296.000ms
+12:55:49.438 Restored build cache from previous deployment (54riU9n8SNt7SswQF13en1kvVVWD)
+12:55:50.191 Running "vercel build"
+12:55:50.635 Vercel CLI 48.12.0
+12:55:50.964 Running "install" command: `npm install`...
+12:55:52.337 
+12:55:52.338 up to date, audited 443 packages in 1s
+12:55:52.339 
+12:55:52.339 159 packages are looking for funding
+12:55:52.339   run `npm fund` for details
+12:55:52.340 
+12:55:52.340 found 0 vulnerabilities
+12:55:52.370 Detected Next.js version: 16.0.4
+12:55:52.371 Running "prisma generate && next build"
+12:55:53.088 Prisma schema loaded from prisma/schema.prisma
+12:55:53.500 
+12:55:53.501 ✔ Generated Prisma Client (v6.8.0) to ./node_modules/@prisma/client in 219ms
+12:55:53.501 
+12:55:53.501 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+12:55:53.501 
+12:55:53.502 Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+12:55:53.502 
+12:55:53.927 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+12:55:54.668    ▲ Next.js 16.0.4 (Turbopack)
+12:55:54.669 
+12:55:54.677  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+12:55:54.707    Creating an optimized production build ...
+12:55:54.909 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+12:56:08.236 
+12:56:08.236 > Build error occurred
+12:56:08.241 Error: Turbopack build failed with 1 errors:
+12:56:08.241 ./components/ContentList.tsx:108:19
+12:56:08.242 Parsing ecmascript source code failed
+12:56:08.242 [0m [90m 106 |[39m               [33m>[39m
+12:56:08.242  [90m 107 |[39m                 [33m<[39m[33mEye[39m className[33m=[39m[32m"h-5 w-5 text-gray-600"[39m [33m/[39m[33m>[39m
+12:56:08.242 [31m[1m>[22m[39m[90m 108 |[39m               [33m<[39m[33m/[39m[33mLink[39m[33m>[39m
+12:56:08.242  [90m     |[39m                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+12:56:08.242 [31m[1m>[22m[39m[90m 109 |[39m               [33m<[39m[33mbutton[39m
+12:56:08.243  [90m     |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+12:56:08.247  [90m 110 |[39m                 onClick[33m=[39m{() [33m=>[39m handleDelete(content[33m.[39mid)}
+12:56:08.247  [90m 111 |[39m                 className[33m=[39m[32m"rounded-lg border border-red-300 p-2 hover:bg-red-50 cursor-pointer transition-colors"[39m
+12:56:08.248  [90m 112 |[39m                 title[33m=[39m[32m"Delete"[39m[0m
+12:56:08.248 
+12:56:08.248 Expected '</', got 'jsx text (
+12:56:08.248               )'
+12:56:08.248 
+12:56:08.248 Import trace:
+12:56:08.248   Server Component:
+12:56:08.249     ./components/ContentList.tsx
+12:56:08.249     ./app/dashboard/content/page.tsx
+12:56:08.249 
+12:56:08.249 
+12:56:08.249     at <unknown> (./components/ContentList.tsx:108:19)
+12:56:08.298 Error: Command "prisma generate && next build" exited with 1
