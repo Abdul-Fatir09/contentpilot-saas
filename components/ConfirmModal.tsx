@@ -11,6 +11,7 @@ interface ConfirmModalProps {
   message: string
   confirmText?: string
   confirmColor?: 'red' | 'blue'
+  isLoading?: boolean
 }
 
 export function ConfirmModal({
@@ -20,9 +21,12 @@ export function ConfirmModal({
   title,
   message,
   confirmText = "Delete",
-  confirmColor = "red"
+  confirmColor = "red",
+  isLoading = false
 }: ConfirmModalProps) {
   const [loading, setLoading] = useState(false)
+  
+  const isProcessing = isLoading || loading
 
   if (!isOpen) return null
 
@@ -47,7 +51,7 @@ export function ConfirmModal({
           </div>
           <button
             onClick={onClose}
-            disabled={loading}
+            disabled={isProcessing}
             className="p-1 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
           >
             <X className="w-5 h-5 text-gray-500" />
@@ -60,24 +64,24 @@ export function ConfirmModal({
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            disabled={loading}
+            disabled={isProcessing}
             className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             onClick={handleConfirm}
-            disabled={loading}
+            disabled={isProcessing}
             className={`flex-1 px-4 py-3 text-white rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
               confirmColor === 'red' 
                 ? 'bg-red-600 hover:bg-red-700' 
                 : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
-            {loading && (
+            {isProcessing && (
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
             )}
-            {loading ? 'Deleting...' : confirmText}
+            {isProcessing ? 'Deleting...' : confirmText}
           </button>
         </div>
       </div>
