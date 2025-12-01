@@ -5,6 +5,7 @@ import { z } from 'zod'
 
 const folderSchema = z.object({
   name: z.string().min(1, 'Folder name is required'),
+  description: z.string().optional(),
   color: z.string().optional(),
 })
 
@@ -26,7 +27,7 @@ export async function GET() {
       orderBy: { createdAt: 'desc' },
     })
 
-    return NextResponse.json({ folders })
+    return NextResponse.json(folders)
   } catch (error) {
     console.error('Error fetching folders:', error)
     return NextResponse.json(
@@ -51,11 +52,17 @@ export async function POST(request: NextRequest) {
       data: {
         userId: session.user.id,
         name: validatedData.name,
+        description: validatedData.description || null,
         color: validatedData.color || '#3b82f6',
+      },
+      include: {
+        _count: {
+          select: { contents: true },
+        },
       },
     })
 
-    return NextResponse.json({ folder })
+    return NextResponse.json(folder)
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
