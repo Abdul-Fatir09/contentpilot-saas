@@ -47,11 +47,22 @@ export default function DashboardPage() {
     async function fetchData() {
       try {
         const response = await fetch('/api/dashboard/stats')
+        if (!response.ok) {
+          console.error('Failed to fetch stats:', response.status)
+          return
+        }
         const data = await response.json()
-        setUserName(data.userName)
-        setStats(data.stats)
+        if (data.userName) setUserName(data.userName)
+        if (data.stats) setStats(data.stats)
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error)
+        // Set default values on error
+        setStats({
+          subscription: "FREE",
+          contentCount: 0,
+          scheduledCount: 0,
+          todayContent: 0
+        })
       }
     }
     fetchData()

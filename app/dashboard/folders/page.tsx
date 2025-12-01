@@ -25,12 +25,18 @@ export default function FoldersPage() {
   const fetchFolders = async () => {
     try {
       const res = await fetch('/api/folders');
-      if (!res.ok) throw new Error('Failed to fetch folders');
+      if (!res.ok) {
+        console.error('Failed to fetch folders:', res.status);
+        setLoading(false);
+        return;
+      }
       const data = await res.json();
-      setFolders(data.folders || data);
+      // Handle both array and object with folders property
+      setFolders(Array.isArray(data) ? data : (data.folders || []));
     } catch (error) {
       console.error('Error fetching folders:', error);
       toast.error('Failed to load folders');
+      setFolders([]);
     } finally {
       setLoading(false);
     }
