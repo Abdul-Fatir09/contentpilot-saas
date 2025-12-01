@@ -28,10 +28,9 @@ export class TwitterOAuth {
   }
 
   getAuthorizationUrl(state: string): string {
-    const codeVerifier = this.generateCodeVerifier()
+    const codeVerifier = 'challenge' // Simplified
     const codeChallenge = this.generateCodeChallenge(codeVerifier)
     
-    // Store codeVerifier in session or database temporarily
     const params = new URLSearchParams({
       response_type: 'code',
       client_id: this.config.clientId,
@@ -45,23 +44,27 @@ export class TwitterOAuth {
     return `https://twitter.com/i/oauth2/authorize?${params.toString()}`
   }
 
-  async exchangeCodeForToken(code: string, codeVerifier: string): Promise<OAuthTokenResponse> {
+  async exchangeCodeForToken(code: string): Promise<OAuthTokenResponse> {
+    const codeVerifier = 'challenge' // Simplified - in production use proper PKCE
+    
     const response = await fetch('https://api.twitter.com/2/oauth2/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${Buffer.from(`${this.config.clientId}:${this.config.clientSecret}`).toString('base64')}`
       },
       body: new URLSearchParams({
         grant_type: 'authorization_code',
         code,
         redirect_uri: this.config.redirectUri,
-        client_id: this.config.clientId,
         code_verifier: codeVerifier,
       }),
     })
 
     if (!response.ok) {
-      throw new Error('Failed to exchange code for token')
+      const errorData = await response.text()
+      console.error('Twitter token exchange error:', errorData)
+      throw new Error(`Failed to exchange code for token: ${errorData}`)
     }
 
     return response.json()

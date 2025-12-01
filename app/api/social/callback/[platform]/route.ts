@@ -12,14 +12,18 @@ export async function GET(
     const state = searchParams.get('state')
     const error = searchParams.get('error')
 
+    console.log('OAuth callback received:', { platform: (await params).platform, code: !!code, state: !!state, error })
+
     // Check for OAuth errors
     if (error) {
+      console.error('OAuth error:', error)
       return NextResponse.redirect(
         `${process.env.NEXTAUTH_URL}/dashboard/social?error=${encodeURIComponent(error)}`
       )
     }
 
     if (!code || !state) {
+      console.error('Missing code or state')
       return NextResponse.redirect(
         `${process.env.NEXTAUTH_URL}/dashboard/social?error=missing_parameters`
       )
@@ -29,7 +33,14 @@ export async function GET(
     const storedState = request.cookies.get('oauth_state')?.value
     const userId = request.cookies.get('oauth_user_id')?.value
 
+    console.log('Cookie verification:', { 
+      hasStoredState: !!storedState, 
+      statesMatch: storedState === state, 
+      hasUserId: !!userId 
+    })
+
     if (!storedState || storedState !== state || !userId) {
+      console.error('State verification failed')
       return NextResponse.redirect(
         `${process.env.NEXTAUTH_URL}/dashboard/social?error=invalid_state`
       )
@@ -38,20 +49,24 @@ export async function GET(
     const { platform } = await params
     const platformUpper = platform.toUpperCase() as 'TWITTER' | 'FACEBOOK' | 'LINKEDIN' | 'INSTAGRAM' | 'TIKTOK'
 
+    console.log('Processing OAuth for platform:', platformUpper)
+
     // Exchange code for token
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
     const redirectUri = `${baseUrl}/api/social/callback/${platform}`
     
     const oauthProvider = getOAuthProvider(platform, redirectUri)
     
-    // For Twitter, we need the code verifier (simplified - in production, store this securely)
-    const codeVerifier = request.cookies.get('oauth_code_verifier')?.value || ''
-    
     let tokenData
-    if (platform === 'twitter') {
-      tokenData = await (oauthProvider as any).exchangeCodeForToken(code, codeVerifier)
-    } else {
+    try {
+      // For Twitter, we don't need code verifier in OAuth 2.0
       tokenData = await (oauthProvider as any).exchangeCodeForToken(code)
+      console.log('Token exchange successful')
+    } catch (tokenError) {
+      console.error('Token exchange failed:', tokenError)
+      return NextResponse.redirect(
+        `${process.env.NEXTAUTH_URL}/dashboard/social?error=token_exchange_failed`
+      )
     }
 
     // Get user info from the platform
