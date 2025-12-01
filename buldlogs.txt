@@ -1,120 +1,120 @@
-12:52:32.920 Running build in Washington, D.C., USA (East) – iad1
-12:52:32.920 Build machine configuration: 2 cores, 8 GB
-12:52:33.044 Cloning github.com/Abdul-Fatir09/contentpilot-saas (Branch: main, Commit: f2cf423)
-12:52:33.302 Cloning completed: 258.000ms
-12:52:34.198 Restored build cache from previous deployment (G13njWJUxTBuwMruVUSc9Y8a1aD3)
-12:52:35.033 Running "vercel build"
-12:52:35.545 Vercel CLI 48.12.0
-12:52:35.894 Running "install" command: `npm install`...
-12:52:39.380 
-12:52:39.380 up to date, audited 443 packages in 3s
-12:52:39.381 
-12:52:39.381 159 packages are looking for funding
-12:52:39.382   run `npm fund` for details
-12:52:39.382 
-12:52:39.382 found 0 vulnerabilities
-12:52:39.413 Detected Next.js version: 16.0.4
-12:52:39.414 Running "prisma generate && next build"
-12:52:40.329 Prisma schema loaded from prisma/schema.prisma
-12:52:40.756 
-12:52:40.757 ✔ Generated Prisma Client (v6.8.0) to ./node_modules/@prisma/client in 195ms
-12:52:40.757 
-12:52:40.758 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
-12:52:40.758 
-12:52:40.758 Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
-12:52:40.758 
-12:52:41.131 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-12:52:41.941    ▲ Next.js 16.0.4 (Turbopack)
-12:52:41.942 
-12:52:41.949  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
-12:52:41.984    Creating an optimized production build ...
-12:52:42.201 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-12:52:56.726 
-12:52:56.727 > Build error occurred
-12:52:56.730 Error: Turbopack build failed with 3 errors:
-12:52:56.730 ./app/dashboard/content/[id]/PostToSocial.tsx:151:5
-12:52:56.730 Parsing ecmascript source code failed
-12:52:56.731 [0m [90m 149 |[39m         {buttonText}
-12:52:56.731  [90m 150 |[39m       [33m<[39m[33m/[39m[33mbutton[39m[33m>[39mbg[33m-[39mblack[32m",[39m
-12:52:56.731 [31m[1m>[22m[39m[90m 151 |[39m     }
-12:52:56.731  [90m     |[39m     [31m[1m^[22m[39m
-12:52:56.731  [90m 152 |[39m     [36mreturn[39m colors[platform] [33m||[39m [32m"bg-gray-500"[39m
-12:52:56.731  [90m 153 |[39m   }
-12:52:56.731  [90m 154 |[39m[0m
-12:52:56.732 
-12:52:56.732 Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
-12:52:56.732 
-12:52:56.732 Import traces:
-12:52:56.732   Server Component:
-12:52:56.732     ./app/dashboard/content/[id]/PostToSocial.tsx
-12:52:56.732     ./app/dashboard/content/[id]/page.tsx
-12:52:56.732 
-12:52:56.732   Client Component Browser:
-12:52:56.732     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component Browser]
-12:52:56.732     ./app/dashboard/content/new/page.tsx [Client Component Browser]
-12:52:56.732     ./app/dashboard/content/new/page.tsx [Server Component]
-12:52:56.732 
-12:52:56.733   Client Component SSR:
-12:52:56.733     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component SSR]
-12:52:56.733     ./app/dashboard/content/new/page.tsx [Client Component SSR]
-12:52:56.733     ./app/dashboard/content/new/page.tsx [Server Component]
-12:52:56.733 
-12:52:56.733 
-12:52:56.733 ./app/dashboard/content/[id]/PostToSocial.tsx:153:3
-12:52:56.733 Parsing ecmascript source code failed
-12:52:56.733 [0m [90m 151 |[39m     }
-12:52:56.733  [90m 152 |[39m     [36mreturn[39m colors[platform] [33m||[39m [32m"bg-gray-500"[39m
-12:52:56.733 [31m[1m>[22m[39m[90m 153 |[39m   }
-12:52:56.733  [90m     |[39m   [31m[1m^[22m[39m
-12:52:56.734  [90m 154 |[39m
-12:52:56.734  [90m 155 |[39m   [36mreturn[39m (
-12:52:56.734  [90m 156 |[39m     [33m<[39m[33m>[39m[0m
-12:52:56.734 
-12:52:56.734 Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
-12:52:56.734 
-12:52:56.734 Import traces:
-12:52:56.734   Server Component:
-12:52:56.734     ./app/dashboard/content/[id]/PostToSocial.tsx
-12:52:56.734     ./app/dashboard/content/[id]/page.tsx
-12:52:56.734 
-12:52:56.734   Client Component Browser:
-12:52:56.735     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component Browser]
-12:52:56.735     ./app/dashboard/content/new/page.tsx [Client Component Browser]
-12:52:56.735     ./app/dashboard/content/new/page.tsx [Server Component]
-12:52:56.735 
-12:52:56.735   Client Component SSR:
-12:52:56.735     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component SSR]
-12:52:56.735     ./app/dashboard/content/new/page.tsx [Client Component SSR]
-12:52:56.735     ./app/dashboard/content/new/page.tsx [Server Component]
-12:52:56.735 
-12:52:56.735 
-12:52:56.735 ./app/dashboard/content/[id]/PostToSocial.tsx:301:1
-12:52:56.735 Parsing ecmascript source code failed
-12:52:56.736 [0m [90m 299 |[39m     [33m<[39m[33m/[39m[33m>[39m
-12:52:56.736  [90m 300 |[39m   )
-12:52:56.736 [31m[1m>[22m[39m[90m 301 |[39m }
-12:52:56.736  [90m     |[39m [31m[1m^[22m[39m
-12:52:56.736  [90m 302 |[39m[0m
-12:52:56.737 
-12:52:56.737 Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
-12:52:56.737 
-12:52:56.737 Import traces:
-12:52:56.737   Server Component:
-12:52:56.737     ./app/dashboard/content/[id]/PostToSocial.tsx
-12:52:56.747     ./app/dashboard/content/[id]/page.tsx
-12:52:56.749 
-12:52:56.749   Client Component Browser:
-12:52:56.749     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component Browser]
-12:52:56.749     ./app/dashboard/content/new/page.tsx [Client Component Browser]
-12:52:56.750     ./app/dashboard/content/new/page.tsx [Server Component]
-12:52:56.750 
-12:52:56.750   Client Component SSR:
-12:52:56.750     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component SSR]
-12:52:56.750     ./app/dashboard/content/new/page.tsx [Client Component SSR]
-12:52:56.750     ./app/dashboard/content/new/page.tsx [Server Component]
-12:52:56.750 
-12:52:56.750 
-12:52:56.750     at <unknown> (./app/dashboard/content/[id]/PostToSocial.tsx:151:5)
-12:52:56.750     at <unknown> (./app/dashboard/content/[id]/PostToSocial.tsx:153:3)
-12:52:56.751     at <unknown> (./app/dashboard/content/[id]/PostToSocial.tsx:301:1)
-12:52:56.794 Error: Command "prisma generate && next build" exited with 1
+12:55:57.217 Running build in Washington, D.C., USA (East) – iad1
+12:55:57.217 Build machine configuration: 2 cores, 8 GB
+12:55:57.346 Cloning github.com/Abdul-Fatir09/contentpilot-saas (Branch: main, Commit: d2fd460)
+12:55:57.628 Cloning completed: 281.000ms
+12:55:58.362 Restored build cache from previous deployment (G13njWJUxTBuwMruVUSc9Y8a1aD3)
+12:55:59.203 Running "vercel build"
+12:55:59.585 Vercel CLI 48.12.0
+12:55:59.919 Running "install" command: `npm install`...
+12:56:01.537 
+12:56:01.538 up to date, audited 443 packages in 1s
+12:56:01.538 
+12:56:01.538 159 packages are looking for funding
+12:56:01.539   run `npm fund` for details
+12:56:01.539 
+12:56:01.539 found 0 vulnerabilities
+12:56:01.568 Detected Next.js version: 16.0.4
+12:56:01.570 Running "prisma generate && next build"
+12:56:02.239 Prisma schema loaded from prisma/schema.prisma
+12:56:02.700 
+12:56:02.700 ✔ Generated Prisma Client (v6.8.0) to ./node_modules/@prisma/client in 214ms
+12:56:02.700 
+12:56:02.700 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+12:56:02.700 
+12:56:02.700 Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+12:56:02.701 
+12:56:03.089 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+12:56:03.830    ▲ Next.js 16.0.4 (Turbopack)
+12:56:03.831 
+12:56:03.839  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+12:56:03.871    Creating an optimized production build ...
+12:56:04.052 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+12:56:17.358 
+12:56:17.359 > Build error occurred
+12:56:17.364 Error: Turbopack build failed with 3 errors:
+12:56:17.365 ./app/dashboard/content/[id]/PostToSocial.tsx:151:5
+12:56:17.365 Parsing ecmascript source code failed
+12:56:17.365 [0m [90m 149 |[39m         {buttonText}
+12:56:17.365  [90m 150 |[39m       [33m<[39m[33m/[39m[33mbutton[39m[33m>[39mbg[33m-[39mblack[32m",[39m
+12:56:17.365 [31m[1m>[22m[39m[90m 151 |[39m     }
+12:56:17.365  [90m     |[39m     [31m[1m^[22m[39m
+12:56:17.365  [90m 152 |[39m     [36mreturn[39m colors[platform] [33m||[39m [32m"bg-gray-500"[39m
+12:56:17.366  [90m 153 |[39m   }
+12:56:17.366  [90m 154 |[39m[0m
+12:56:17.366 
+12:56:17.366 Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+12:56:17.366 
+12:56:17.366 Import traces:
+12:56:17.366   Server Component:
+12:56:17.366     ./app/dashboard/content/[id]/PostToSocial.tsx
+12:56:17.366     ./app/dashboard/content/[id]/page.tsx
+12:56:17.366 
+12:56:17.366   Client Component Browser:
+12:56:17.366     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component Browser]
+12:56:17.366     ./app/dashboard/content/new/page.tsx [Client Component Browser]
+12:56:17.366     ./app/dashboard/content/new/page.tsx [Server Component]
+12:56:17.366 
+12:56:17.366   Client Component SSR:
+12:56:17.366     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component SSR]
+12:56:17.366     ./app/dashboard/content/new/page.tsx [Client Component SSR]
+12:56:17.366     ./app/dashboard/content/new/page.tsx [Server Component]
+12:56:17.366 
+12:56:17.366 
+12:56:17.366 ./app/dashboard/content/[id]/PostToSocial.tsx:153:3
+12:56:17.367 Parsing ecmascript source code failed
+12:56:17.367 [0m [90m 151 |[39m     }
+12:56:17.367  [90m 152 |[39m     [36mreturn[39m colors[platform] [33m||[39m [32m"bg-gray-500"[39m
+12:56:17.367 [31m[1m>[22m[39m[90m 153 |[39m   }
+12:56:17.367  [90m     |[39m   [31m[1m^[22m[39m
+12:56:17.367  [90m 154 |[39m
+12:56:17.367  [90m 155 |[39m   [36mreturn[39m (
+12:56:17.367  [90m 156 |[39m     [33m<[39m[33m>[39m[0m
+12:56:17.372 
+12:56:17.372 Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+12:56:17.372 
+12:56:17.372 Import traces:
+12:56:17.372   Server Component:
+12:56:17.372     ./app/dashboard/content/[id]/PostToSocial.tsx
+12:56:17.372     ./app/dashboard/content/[id]/page.tsx
+12:56:17.372 
+12:56:17.372   Client Component Browser:
+12:56:17.372     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component Browser]
+12:56:17.372     ./app/dashboard/content/new/page.tsx [Client Component Browser]
+12:56:17.372     ./app/dashboard/content/new/page.tsx [Server Component]
+12:56:17.372 
+12:56:17.372   Client Component SSR:
+12:56:17.372     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component SSR]
+12:56:17.372     ./app/dashboard/content/new/page.tsx [Client Component SSR]
+12:56:17.372     ./app/dashboard/content/new/page.tsx [Server Component]
+12:56:17.372 
+12:56:17.372 
+12:56:17.372 ./app/dashboard/content/[id]/PostToSocial.tsx:301:1
+12:56:17.372 Parsing ecmascript source code failed
+12:56:17.373 [0m [90m 299 |[39m     [33m<[39m[33m/[39m[33m>[39m
+12:56:17.373  [90m 300 |[39m   )
+12:56:17.373 [31m[1m>[22m[39m[90m 301 |[39m }
+12:56:17.373  [90m     |[39m [31m[1m^[22m[39m
+12:56:17.373  [90m 302 |[39m[0m
+12:56:17.373 
+12:56:17.373 Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+12:56:17.373 
+12:56:17.373 Import traces:
+12:56:17.373   Server Component:
+12:56:17.373     ./app/dashboard/content/[id]/PostToSocial.tsx
+12:56:17.373     ./app/dashboard/content/[id]/page.tsx
+12:56:17.373 
+12:56:17.373   Client Component Browser:
+12:56:17.373     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component Browser]
+12:56:17.373     ./app/dashboard/content/new/page.tsx [Client Component Browser]
+12:56:17.374     ./app/dashboard/content/new/page.tsx [Server Component]
+12:56:17.374 
+12:56:17.374   Client Component SSR:
+12:56:17.374     ./app/dashboard/content/[id]/PostToSocial.tsx [Client Component SSR]
+12:56:17.374     ./app/dashboard/content/new/page.tsx [Client Component SSR]
+12:56:17.374     ./app/dashboard/content/new/page.tsx [Server Component]
+12:56:17.374 
+12:56:17.374 
+12:56:17.374     at <unknown> (./app/dashboard/content/[id]/PostToSocial.tsx:151:5)
+12:56:17.374     at <unknown> (./app/dashboard/content/[id]/PostToSocial.tsx:153:3)
+12:56:17.374     at <unknown> (./app/dashboard/content/[id]/PostToSocial.tsx:301:1)
+12:56:17.424 Error: Command "prisma generate && next build" exited with 1
