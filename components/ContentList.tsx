@@ -7,7 +7,7 @@ import type { Content, Folder } from "@prisma/client"
 import { useToast } from "./ToastContainer"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import ConfirmModal from "./ConfirmModal"
+import { ConfirmModal } from "./ConfirmModal"
 
 type ContentWithRelations = Content & {
   folder: Folder | null
