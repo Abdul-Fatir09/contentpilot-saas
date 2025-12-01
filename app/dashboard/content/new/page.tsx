@@ -2,8 +2,9 @@
 
 import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Sparkles, FileText, Twitter, Mail, ShoppingBag, Megaphone } from "lucide-react"
+import { Sparkles, FileText, Twitter, Mail, ShoppingBag, Megaphone, Calendar, Send } from "lucide-react"
 import { useToast } from "@/components/ToastContainer"
+import PostToSocial from "../[id]/PostToSocial"
 
 function NewContentForm() {
   const router = useRouter()
@@ -11,6 +12,7 @@ function NewContentForm() {
   const toast = useToast()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [showScheduleModal, setShowScheduleModal] = useState(false)
   
   const [formData, setFormData] = useState({
     type: "blog" as "blog" | "social" | "ad" | "email" | "product",
@@ -29,8 +31,22 @@ function NewContentForm() {
   // Pre-fill topic from URL parameter
   useEffect(() => {
     const topicParam = searchParams.get('topic')
+    const typeParam = searchParams.get('type')
     if (topicParam) {
-      setFormData(prev => ({ ...prev, topic: topicParam }))
+      setFormData(prev => ({ 
+        ...prev, 
+        topic: topicParam,
+        ...(typeParam && { type: typeParam as any })
+      }))
+    }
+    
+    // Check for template in localStorage
+    if (typeof window !== 'undefined') {
+      const template = localStorage.getItem('contentTemplate')
+      if (template) {
+        setFormData(prev => ({ ...prev, additionalContext: template }))
+        localStorage.removeItem('contentTemplate')
+      }
     }
   }, [searchParams])
 
@@ -88,7 +104,7 @@ function NewContentForm() {
       }
 
       setGeneratedContent(data.content)
-      toast.success("Content generated successfully!")
+      toast.success("Content generated and saved to library!")
       
       // Mark onboarding step as complete
       fetch("/api/onboarding", {
@@ -104,11 +120,8 @@ function NewContentForm() {
     }
   }
 
-  const handleSaveAndContinue = () => {
-    toast.success("Content saved! Redirecting to library...")
-    setTimeout(() => {
-      router.push("/dashboard/content")
-    }, 1000)
+  const getPlatformName = () => {
+    return formData.platform.charAt(0).toUpperCase() + formData.platform.slice(1)
   }
 
   return (
@@ -370,12 +383,36 @@ function NewContentForm() {
                 </div>
               )}
 
-              <button
-                onClick={handleSaveAndContinue}
-                className="w-full rounded-lg bg-green-600 px-6 py-3 text-white hover:bg-green-700"
-              >
-                Save & View Library
-              </button>
+              <div className="flex gap-3">
+                {formData.type === "social" && generatedContent && (
+                  <>
+                    <PostToSocial 
+                      contentId={generatedContent.id} 
+                      contentText={generatedContent.content}
+                      buttonText={`Post to ${getPlatformName()}`}
+                      buttonClassName="flex-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-white hover:bg-blue-700"
+                      icon={<Send className="w-4 h-4" />}
+                    />
+                    <PostToSocial 
+                      contentId={generatedContent.id} 
+                      contentText={generatedContent.content}
+                      buttonText="Schedule Post"
+                      buttonClassName="flex-1 flex items-center justify-center gap-2 rounded-lg bg-purple-600 px-6 py-3 text-white hover:bg-purple-700"
+                      icon={<Calendar className="w-4 h-4" />}
+                      forceSchedule={true}
+                    />
+                  </>
+                )}
+                
+                {formData.type !== "social" && (
+                  <button
+                    onClick={() => router.push("/dashboard/content")}
+                    className="w-full rounded-lg bg-green-600 px-6 py-3 text-white hover:bg-green-700"
+                  >
+                    View in Library
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>

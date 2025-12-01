@@ -1,6 +1,6 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
-import { LayoutDashboard, FileText, Calendar, BarChart3, Settings, Folder, Zap, Share2, CreditCard } from "lucide-react"
+import { LayoutDashboard, FileText, Calendar, BarChart3, Settings, Folder, Zap, Share2, CreditCard, Send, Layers } from "lucide-react"
 import Link from "next/link"
 import { SignOutButton } from "@/components/SignOutButton"
 
@@ -19,6 +19,8 @@ export default async function DashboardLayout({
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Content", href: "/dashboard/content", icon: FileText },
     { name: "Create New", href: "/dashboard/content/new", icon: Zap, highlight: true },
+    { name: "Templates", href: "/dashboard/templates", icon: Layers },
+    { name: "Posts", href: "/dashboard/posts", icon: Send },
     { name: "Calendar", href: "/dashboard/calendar", icon: Calendar },
     { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
     { name: "Social Accounts", href: "/dashboard/social", icon: Share2 },

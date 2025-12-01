@@ -14,9 +14,20 @@ interface SocialAccount {
 interface PostToSocialProps {
   contentId: string
   contentText: string
+  buttonText?: string
+  buttonClassName?: string
+  icon?: React.ReactNode
+  forceSchedule?: boolean
 }
 
-export default function PostToSocial({ contentId, contentText }: PostToSocialProps) {
+export default function PostToSocial({ 
+  contentId, 
+  contentText,
+  buttonText = "Post to Social Media",
+  buttonClassName = "flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors",
+  icon,
+  forceSchedule = false
+}: PostToSocialProps) {
   const toast = useToast()
   const [isOpen, setIsOpen] = useState(false)
   const [accounts, setAccounts] = useState<SocialAccount[]>([])
@@ -28,8 +39,14 @@ export default function PostToSocial({ contentId, contentText }: PostToSocialPro
   useEffect(() => {
     if (isOpen) {
       fetchAccounts()
+      // If forceSchedule is true, set default time to 1 hour from now
+      if (forceSchedule && !scheduledFor) {
+        const defaultTime = new Date()
+        defaultTime.setHours(defaultTime.getHours() + 1)
+        setScheduledFor(defaultTime.toISOString().slice(0, 16))
+      }
     }
-  }, [isOpen])
+  }, [isOpen, forceSchedule])
 
   const fetchAccounts = async () => {
     try {
@@ -122,15 +139,15 @@ export default function PostToSocial({ contentId, contentText }: PostToSocialPro
     } finally {
       setLoading(false)
     }
-  }
-
-  const getPlatformColor = (platform: string) => {
-    const colors: Record<string, string> = {
-      TWITTER: "bg-blue-500",
-      FACEBOOK: "bg-blue-600",
-      LINKEDIN: "bg-blue-700",
-      INSTAGRAM: "bg-pink-500",
-      TIKTOK: "bg-black",
+  return (
+    <>
+      <button
+        onClick={() => setIsOpen(true)}
+        className={buttonClassName}
+      >
+        {icon || <Send className="w-4 h-4" />}
+        {buttonText}
+      </button>bg-black",
     }
     return colors[platform] || "bg-gray-500"
   }
@@ -248,8 +265,7 @@ export default function PostToSocial({ contentId, contentText }: PostToSocialPro
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
+              <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
               <button
                 onClick={() => setIsOpen(false)}
                 className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -257,10 +273,10 @@ export default function PostToSocial({ contentId, contentText }: PostToSocialPro
               >
                 Cancel
               </button>
-              {scheduledFor ? (
+              {(scheduledFor || forceSchedule) ? (
                 <button
                   onClick={handleSchedule}
-                  disabled={loading || selectedAccounts.length === 0}
+                  disabled={loading || selectedAccounts.length === 0 || !scheduledFor}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                 >
                   <Calendar className="w-4 h-4" />

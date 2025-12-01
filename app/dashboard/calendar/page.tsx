@@ -3,13 +3,20 @@
 import { Calendar, Clock, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/components/ToastContainer';
+import SchedulePostModal from './SchedulePostModal';
 
 export default function CalendarPage() {
   const toast = useToast();
   const [currentDate] = useState(new Date());
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
 
   return (
     <div className="space-y-6">
+      <SchedulePostModal 
+        isOpen={showScheduleModal} 
+        onClose={() => setShowScheduleModal(false)} 
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -19,7 +26,7 @@ export default function CalendarPage() {
           </p>
         </div>
         <button 
-          onClick={() => toast.info('Schedule post functionality coming soon!')}
+          onClick={() => setShowScheduleModal(true)}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
         >
           <Plus className="w-4 h-4" />
