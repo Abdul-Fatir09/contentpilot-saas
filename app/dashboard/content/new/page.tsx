@@ -89,6 +89,13 @@ function NewContentForm() {
 
       setGeneratedContent(data.content)
       toast.success("Content generated successfully!")
+      
+      // Mark onboarding step as complete
+      fetch("/api/onboarding", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ step: "content" }),
+      }).catch((err) => console.error("Failed to update onboarding:", err))
     } catch (err: any) {
       setError(err.message)
       toast.error(err.message || "Failed to generate content")

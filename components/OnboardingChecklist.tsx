@@ -2,69 +2,88 @@
 
 import { useState, useEffect } from "react"
 import { CheckCircle2, Circle, X, Sparkles } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface ChecklistItem {
   id: string
   title: string
   description: string
   completed: boolean
+  action: string
 }
 
 export default function OnboardingChecklist() {
+  const router = useRouter()
   const [isVisible, setIsVisible] = useState(true)
+  const [loading, setLoading] = useState(true)
   const [items, setItems] = useState<ChecklistItem[]>([
     {
       id: "profile",
       title: "Complete Your Profile",
       description: "Add your details and preferences",
       completed: false,
+      action: "/dashboard/onboarding/complete-profile",
     },
     {
       id: "content",
       title: "Generate Your First Content",
       description: "Create a blog post or social media caption",
       completed: false,
+      action: "/dashboard/content/new",
     },
     {
       id: "schedule",
       title: "Schedule Your First Post",
       description: "Plan your content calendar",
       completed: false,
+      action: "/dashboard/calendar",
     },
     {
       id: "connect",
       title: "Connect Social Accounts",
       description: "Link your social media platforms",
       completed: false,
+      action: "/dashboard/social",
     },
   ])
 
-  // Load from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem("onboarding-checklist")
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      setItems(parsed.items)
-      setIsVisible(parsed.visible)
-    }
+    fetchOnboardingStatus()
   }, [])
 
-  // Save to localStorage whenever items change
-  useEffect(() => {
-    localStorage.setItem("onboarding-checklist", JSON.stringify({ items, visible: isVisible }))
-  }, [items, isVisible])
+  const fetchOnboardingStatus = async () => {
+    try {
+      const res = await fetch("/api/onboarding")
+      if (!res.ok) {
+        setLoading(false)
+        return
+      }
+      const data = await res.json()
+      
+      setItems((prevItems) =>
+        prevItems.map((item) => ({
+          ...item,
+          completed: data.steps[item.id] || false,
+        }))
+      )
+    } catch (error) {
+      console.error("Failed to fetch onboarding status:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const toggleItem = (id: string) => {
-    setItems(items.map(item => 
-      item.id === id ? { ...item, completed: !item.completed } : item
-    ))
+  const handleItemClick = (item: ChecklistItem) => {
+    if (!item.completed) {
+      router.push(item.action)
+    }
   }
 
   const completedCount = items.filter(item => item.completed).length
   const totalCount = items.length
   const progress = (completedCount / totalCount) * 100
 
-  if (!isVisible) return null
+  if (!isVisible || loading) return null
 
   return (
     <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 shadow-sm relative overflow-hidden">
@@ -109,8 +128,9 @@ export default function OnboardingChecklist() {
           {items.map((item) => (
             <button
               key={item.id}
-              onClick={() => toggleItem(item.id)}
-              className="w-full flex items-start gap-3 p-3 rounded-xl hover:bg-white/60 transition-all text-left group"
+              onClick={() => handleItemClick(item)}
+              disabled={item.completed}
+              className="w-full flex items-start gap-3 p-3 rounded-xl hover:bg-white/60 transition-all text-left group disabled:cursor-default disabled:hover:bg-transparent"
             >
               {item.completed ? (
                 <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
@@ -123,6 +143,11 @@ export default function OnboardingChecklist() {
                 </p>
                 <p className="text-sm text-gray-600">{item.description}</p>
               </div>
+              {!item.completed && (
+                <span className="text-xs text-indigo-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity mt-1">
+                  Start →
+                </span>
+              )}
             </button>
           ))}
         </div>
