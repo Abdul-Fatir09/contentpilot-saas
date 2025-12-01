@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
             where: { id: socialPost.id },
             data: {
               status: 'FAILED',
-              error: result.error,
+              errorMessage: result.error,
             },
           })
           throw new Error(result.error || 'Failed to post')
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
           data: {
             status: 'PUBLISHED',
             publishedAt: new Date(),
-            externalId: result.postId,
+            platformPostId: result.postId,
           },
         })
 
