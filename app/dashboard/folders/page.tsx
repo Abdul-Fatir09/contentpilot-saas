@@ -3,11 +3,15 @@
 import { Folder, Plus, Edit2, Trash2, FolderOpen } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/components/ToastContainer';
+import { ConfirmModal } from '@/components/ConfirmModal';
 
 export default function FoldersPage() {
   const toast = useToast();
   const [folders, setFolders] = useState<any[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState<any>(null);
   const [newFolderName, setNewFolderName] = useState('');
   const [newFolderColor, setNewFolderColor] = useState('blue');
   const [newFolderDescription, setNewFolderDescription] = useState('');
@@ -35,11 +39,38 @@ export default function FoldersPage() {
     toast.success(`Folder "${newFolderName}" created successfully!`);
   };
 
-  const handleDeleteFolder = (id: string) => {
-    if (confirm('Are you sure you want to delete this folder?')) {
-      const folder = folders.find(f => f.id === id);
-      setFolders(folders.filter(f => f.id !== id));
-      toast.success(`Folder "${folder?.name}" deleted successfully!`);
+  const handleEditFolder = () => {
+    if (!newFolderName.trim()) {
+      toast.warning('Please enter a folder name');
+      return;
+    }
+    
+    setFolders(folders.map(f => 
+      f.id === selectedFolder.id 
+        ? { ...f, name: newFolderName, description: newFolderDescription, color: newFolderColor }
+        : f
+    ));
+    
+    toast.success(`Folder "${newFolderName}" updated successfully!`);
+    setShowEditModal(false);
+    setSelectedFolder(null);
+    setNewFolderName('');
+    setNewFolderDescription('');
+    setNewFolderColor('blue');
+  };
+
+  const openEditModal = (folder: any) => {
+    setSelectedFolder(folder);
+    setNewFolderName(folder.name);
+    setNewFolderDescription(folder.description || '');
+    setNewFolderColor(folder.color);
+    setShowEditModal(true);
+  };
+
+  const handleDeleteFolder = () => {
+    if (selectedFolder) {
+      setFolders(folders.filter(f => f.id !== selectedFolder.id));
+      toast.success(`Folder "${selectedFolder.name}" deleted successfully!`);
     }
   };
 
@@ -125,7 +156,7 @@ export default function FoldersPage() {
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      alert('Edit functionality coming soon!');
+                      openEditModal(folder);
                     }}
                     className="p-1 hover:bg-gray-100 rounded cursor-pointer"
                   >
@@ -134,7 +165,8 @@ export default function FoldersPage() {
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteFolder(folder.id);
+                      setSelectedFolder(folder);
+                      setShowDeleteModal(true);
                     }}
                     className="p-1 hover:bg-gray-100 rounded cursor-pointer"
                   >
@@ -264,6 +296,104 @@ export default function FoldersPage() {
           </div>
         </div>
       )}
+
+      {/* Edit Folder Modal */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowEditModal(false)}>
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-2xl font-bold mb-6">Edit Folder</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Folder Name
+                </label>
+                <input
+                  type="text"
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
+                  placeholder="e.g., Blog Posts, Social Media"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Description (Optional)
+                </label>
+                <textarea
+                  value={newFolderDescription}
+                  onChange={(e) => setNewFolderDescription(e.target.value)}
+                  placeholder="What will you store here?"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Folder Color
+                </label>
+                <div className="flex gap-3">
+                  {['blue', 'green', 'purple', 'orange', 'pink', 'gray'].map((color) => (
+                    <button
+                      key={color}
+                      onClick={() => setNewFolderColor(color)}
+                      className={`w-10 h-10 rounded-lg cursor-pointer transition-all ${
+                        newFolderColor === color ? 'ring-2 ring-offset-2 ring-blue-500 scale-110' : ''
+                      } ${
+                        color === 'blue' ? 'bg-blue-500' :
+                        color === 'green' ? 'bg-green-500' :
+                        color === 'purple' ? 'bg-purple-500' :
+                        color === 'orange' ? 'bg-orange-500' :
+                        color === 'pink' ? 'bg-pink-500' :
+                        'bg-gray-500'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-8">
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setSelectedFolder(null);
+                  setNewFolderName('');
+                  setNewFolderDescription('');
+                  setNewFolderColor('blue');
+                }}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold cursor-pointer transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEditFolder}
+                disabled={!newFolderName.trim()}
+                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedFolder(null);
+        }}
+        onConfirm={handleDeleteFolder}
+        title="Delete Folder?"
+        message={`Are you sure you want to delete "${selectedFolder?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        confirmColor="red"
+      />
     </div>
   );
 }
