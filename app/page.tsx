@@ -186,7 +186,7 @@ export default async function Home() {
                 price: "$19.99",
                 period: "/month",
                 features: ["100 generations/day", "5 platforms", "Advanced analytics"],
-                cta: "Get Started",
+                cta: "Upgrade to Starter",
                 gradient: "from-blue-500 to-cyan-600",
               },
               {
@@ -195,16 +195,16 @@ export default async function Home() {
                 period: "/month",
                 features: ["Unlimited generations", "All platforms", "Full analytics", "A/B testing"],
                 popular: true,
-                cta: "Start Pro",
-                gradient: "from-indigo-600 to-purple-600",
+                cta: "Upgrade to Professional",
+                gradient: "from-purple-500 to-pink-600",
               },
               {
                 name: "Agency",
-                price: "$199",
+                price: "$199.99",
                 period: "/month",
                 features: ["Everything in Pro", "Multiple brands", "Team collaboration", "API access"],
-                cta: "Go Agency",
-                gradient: "from-purple-600 to-pink-600",
+                cta: "Upgrade to Enterprise",
+                gradient: "from-indigo-600 to-purple-600",
               },
             ].map((plan, index) => (
               <div

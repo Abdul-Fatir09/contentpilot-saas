@@ -32,7 +32,7 @@ export default function PricingPage() {
     },
     {
       name: 'Starter',
-      price: { monthly: 19.99, annual: 191.90 },
+      price: { monthly: 19.99, annual: 203.89 },
       description: 'Great for solo content creators',
       icon: Zap,
       gradient: 'from-blue-500 to-cyan-600',
@@ -55,7 +55,7 @@ export default function PricingPage() {
     },
     {
       name: 'Professional',
-      price: { monthly: 69.99, annual: 671.90 },
+      price: { monthly: 69.99, annual: 713.89 },
       description: 'Perfect for growing businesses',
       icon: Crown,
       gradient: 'from-purple-500 to-pink-600',
@@ -79,7 +79,7 @@ export default function PricingPage() {
     },
     {
       name: 'Enterprise',
-      price: { monthly: 199, annual: 1990 },
+      price: { monthly: 199.99, annual: 2039.89 },
       description: 'For large teams and agencies',
       icon: Rocket,
       gradient: 'from-indigo-600 to-purple-600',
@@ -140,7 +140,7 @@ export default function PricingPage() {
           >
             Annual
             <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-              Save 20%
+              Save 15%
             </span>
           </button>
         </div>
