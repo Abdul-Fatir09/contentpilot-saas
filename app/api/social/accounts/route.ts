@@ -34,7 +34,11 @@ export async function GET() {
         createdAt: true,
         _count: {
           select: {
-            socialPosts: true,
+            socialPosts: {
+              where: {
+                status: 'PUBLISHED',
+              },
+            },
           },
         },
       },

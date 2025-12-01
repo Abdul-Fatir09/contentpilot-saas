@@ -56,13 +56,20 @@ export default function PostsManager({ initialPosts }: { initialPosts: any[] }) 
         method: "DELETE",
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        const data = await response.json()
         throw new Error(data.error || "Failed to delete post")
       }
 
       setPosts(posts.filter((p) => p.id !== postToDelete.id))
-      toast.success("Post deleted successfully")
+      
+      // Show warning if post was published
+      if (data.warning) {
+        toast.info(data.warning)
+      } else {
+        toast.success(data.message || "Post deleted successfully")
+      }
     } catch (error: any) {
       toast.error(error.message || "Failed to delete post")
     } finally {

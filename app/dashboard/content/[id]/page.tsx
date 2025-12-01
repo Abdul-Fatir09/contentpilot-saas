@@ -85,12 +85,17 @@ export default async function ContentDetailPage({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <ContentActions title={content.title} content={content.content} />
-          <PostToSocial contentId={content.id} contentText={content.content} />
+          <PostToSocial 
+            contentId={content.id} 
+            contentText={content.content}
+            buttonText="Post"
+            buttonClassName="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          />
           <Link
             href={`/dashboard/content/${content.id}/edit`}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Edit className="w-4 h-4" />
             Edit

@@ -160,8 +160,8 @@ export default function PostToSocial({
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-20 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-bold text-gray-900">
                 Post to Social Media
@@ -268,7 +268,7 @@ export default function PostToSocial({
               >
                 Cancel
               </button>
-              {scheduledFor || forceSchedule ? (
+              {forceSchedule ? (
                 <button
                   onClick={handleSchedule}
                   disabled={loading || selectedAccounts.length === 0 || !scheduledFor}
@@ -278,14 +278,26 @@ export default function PostToSocial({
                   {loading ? "Scheduling..." : "Schedule Post"}
                 </button>
               ) : (
-                <button
-                  onClick={handlePostNow}
-                  disabled={loading || selectedAccounts.length === 0}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-                >
-                  <Send className="w-4 h-4" />
-                  {loading ? "Posting..." : "Post Now"}
-                </button>
+                <>
+                  <button
+                    onClick={handlePostNow}
+                    disabled={loading || selectedAccounts.length === 0}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                  >
+                    <Send className="w-4 h-4" />
+                    {loading ? "Posting..." : "Post Now"}
+                  </button>
+                  {scheduledFor && (
+                    <button
+                      onClick={handleSchedule}
+                      disabled={loading || selectedAccounts.length === 0 || !scheduledFor}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      {loading ? "Scheduling..." : "Schedule Post"}
+                    </button>
+                  )}
+                </>
               )}
             </div>
           </div>

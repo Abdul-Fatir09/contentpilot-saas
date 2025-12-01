@@ -405,12 +405,13 @@ function NewContentForm() {
                 )}
                 
                 {formData.type !== "social" && (
-                  <button
-                    onClick={() => router.push("/dashboard/content")}
-                    className="w-full rounded-lg bg-green-600 px-6 py-3 text-white hover:bg-green-700"
-                  >
-                    View in Library
-                  </button>
+                  <PostToSocial 
+                    contentId={generatedContent.id} 
+                    contentText={generatedContent.content}
+                    buttonText="Post"
+                    buttonClassName="flex-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-white hover:bg-blue-700"
+                    icon={<Send className="w-4 h-4" />}
+                  />
                 )}
               </div>
             </div>

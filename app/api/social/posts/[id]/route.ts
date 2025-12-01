@@ -47,9 +47,9 @@ export async function DELETE(
     })
 
     return NextResponse.json({ 
-      message: 'Post deleted successfully',
-      note: post.status === 'PUBLISHED' 
-        ? 'Post removed from dashboard only. It still exists on the social platform.' 
+      message: 'Post deleted from dashboard',
+      warning: post.status === 'PUBLISHED' 
+        ? 'This post has been removed from your dashboard but still exists on ' + post.platform + '. To delete it from the platform, please do so manually from ' + post.platform + '.' 
         : undefined
     })
   } catch (error) {
