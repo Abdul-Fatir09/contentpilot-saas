@@ -41,6 +41,8 @@ export default function ContentList({ contents: initialContents }: ContentListPr
     AD_COPY: "bg-green-100 text-green-800",
     EMAIL: "bg-orange-100 text-orange-800",
     PRODUCT_DESCRIPTION: "bg-pink-100 text-pink-800",
+  }
+
   const handleDeleteClick = (contentId: string) => {
     setContentToDelete(contentId)
     setShowDeleteModal(true)
@@ -74,8 +76,6 @@ export default function ContentList({ contents: initialContents }: ContentListPr
       setDeletingId(null)
       setShowDeleteModal(false)
       setContentToDelete(null)
-    }
-  }   setDeletingId(null)
     }
   }
 
