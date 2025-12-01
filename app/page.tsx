@@ -271,9 +271,9 @@ export default async function Home() {
             </div>
             <p className="text-gray-400">&copy; 2025 ContentPilot. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms</a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a>
+              <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy</Link>
+              <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">Terms</Link>
+              <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</Link>
             </div>
           </div>
         </div>

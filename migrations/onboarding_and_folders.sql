@@ -7,5 +7,5 @@ ALTER TABLE "folders" ADD COLUMN IF NOT EXISTS "description" TEXT;
 ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "bio" TEXT;
 ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "company" TEXT;
 ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "website" TEXT;
-ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "onboarding_completed" BOOLEAN DEFAULT false;
-ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "onboarding_steps" JSONB DEFAULT '{"profile": false, "content": false, "schedule": false, "connect": false}';
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "onboardingCompleted" BOOLEAN DEFAULT false;
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "onboardingSteps" JSONB DEFAULT '{"profile": false, "content": false, "schedule": false, "connect": false}';
