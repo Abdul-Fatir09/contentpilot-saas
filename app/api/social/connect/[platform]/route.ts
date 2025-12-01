@@ -25,23 +25,6 @@ export async function GET(
     // Generate state for CSRF protection
     const state = crypto.randomBytes(32).toString('hex')
     
-    // Store state in session or database (simplified - store in cookie)
-    const response = NextResponse.json({ success: true })
-    response.cookies.set('oauth_state', state, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 600, // 10 minutes
-    })
-    
-    // Store user ID for callback
-    response.cookies.set('oauth_user_id', session.user.id, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 600,
-    })
-
     // Get OAuth provider and authorization URL
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
     const redirectUri = `${baseUrl}/api/social/callback/${platform}`
@@ -49,13 +32,30 @@ export async function GET(
     const oauthProvider = getOAuthProvider(platform, redirectUri)
     const authUrl = oauthProvider.getAuthorizationUrl(state)
 
-    // Redirect to OAuth provider
-    return NextResponse.redirect(authUrl)
+    // Store state and user ID in cookies for callback verification
+    const response = NextResponse.redirect(authUrl)
+    
+    response.cookies.set('oauth_state', state, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 600, // 10 minutes
+      path: '/',
+    })
+    
+    response.cookies.set('oauth_user_id', session.user.id, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 600,
+      path: '/',
+    })
+
+    return response
   } catch (error) {
     console.error('OAuth connect error:', error)
-    return NextResponse.json(
-      { error: 'Failed to initiate OAuth connection' },
-      { status: 500 }
+    return NextResponse.redirect(
+      `${process.env.NEXTAUTH_URL}/dashboard/social?error=connection_failed`
     )
   }
 }
