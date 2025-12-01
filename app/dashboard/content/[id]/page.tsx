@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Tag, Edit } from "lucide-react"
 import Link from "next/link"
 import { formatDate } from "@/lib/utils"
 import ContentActions from "./ContentActions"
+import PostToSocial from "./PostToSocial"
 
 export default async function ContentDetailPage({
   params,
@@ -86,6 +87,7 @@ export default async function ContentDetailPage({
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
           <ContentActions title={content.title} content={content.content} />
+          <PostToSocial contentId={content.id} contentText={content.content} />
           <Link
             href={`/dashboard/content/${content.id}/edit`}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
