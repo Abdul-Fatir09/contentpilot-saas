@@ -2,6 +2,14 @@
 
 import { Twitter, Facebook, Linkedin, Instagram, Plus, Settings } from 'lucide-react';
 import { useToast } from '@/components/ToastContainer';
+import Link from 'next/link';
+
+// TikTok icon component
+const TikTokIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+  </svg>
+);
 
 export default function SocialAccountsPage() {
   const toast = useToast();
@@ -37,6 +45,14 @@ export default function SocialAccountsPage() {
       textColor: 'text-pink-600',
       connected: false,
       description: 'Connect your Instagram account to share photos and stories',
+    },
+    {
+      name: 'TikTok',
+      icon: TikTokIcon,
+      bgColor: 'bg-black',
+      textColor: 'text-white',
+      connected: false,
+      description: 'Connect your TikTok account to share short-form videos',
     },
   ];
 
@@ -113,8 +129,11 @@ export default function SocialAccountsPage() {
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h3 className="font-semibold text-blue-900 mb-2">Need Help Connecting?</h3>
         <p className="text-sm text-blue-800">
-          To connect your social media accounts, you'll need to configure API credentials for each platform.
-          Check the <span className="font-semibold">SETUP.md</span> file for detailed instructions on obtaining API keys.
+          See the{' '}
+          <Link href="/dashboard/social/setup-guide" className="font-semibold underline hover:text-blue-900">
+            Setup Guide
+          </Link>{' '}
+          page to get a detailed step-by-step guide for connecting your social media accounts.
         </p>
       </div>
     </div>
