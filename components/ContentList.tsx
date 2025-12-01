@@ -7,6 +7,7 @@ import type { Content, Folder } from "@prisma/client"
 import { useToast } from "./ToastContainer"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import ConfirmModal from "./ConfirmModal"
 
 type ContentWithRelations = Content & {
   folder: Folder | null
@@ -22,6 +23,8 @@ interface ContentListProps {
 export default function ContentList({ contents: initialContents }: ContentListProps) {
   const [contents, setContents] = useState(initialContents)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [contentToDelete, setContentToDelete] = useState<string | null>(null)
   const toast = useToast()
   const router = useRouter()
   const contentTypeLabels: Record<string, string> = {
@@ -38,17 +41,18 @@ export default function ContentList({ contents: initialContents }: ContentListPr
     AD_COPY: "bg-green-100 text-green-800",
     EMAIL: "bg-orange-100 text-orange-800",
     PRODUCT_DESCRIPTION: "bg-pink-100 text-pink-800",
+  const handleDeleteClick = (contentId: string) => {
+    setContentToDelete(contentId)
+    setShowDeleteModal(true)
   }
 
-  const handleDelete = async (contentId: string) => {
-    if (!confirm("Are you sure you want to delete this content? This action cannot be undone.")) {
-      return
-    }
+  const handleConfirmDelete = async () => {
+    if (!contentToDelete) return
 
-    setDeletingId(contentId)
+    setDeletingId(contentToDelete)
 
     try {
-      const response = await fetch(`/api/content/${contentId}`, {
+      const response = await fetch(`/api/content/${contentToDelete}`, {
         method: 'DELETE',
       })
 
@@ -58,7 +62,7 @@ export default function ContentList({ contents: initialContents }: ContentListPr
       }
 
       // Remove from local state
-      setContents(contents.filter(c => c.id !== contentId))
+      setContents(contents.filter(c => c.id !== contentToDelete))
       toast.success('Content deleted successfully!')
       
       // Refresh the page data
@@ -68,6 +72,10 @@ export default function ContentList({ contents: initialContents }: ContentListPr
       toast.error(error.message || 'Failed to delete content')
     } finally {
       setDeletingId(null)
+      setShowDeleteModal(false)
+      setContentToDelete(null)
+    }
+  }   setDeletingId(null)
     }
   }
 
@@ -84,9 +92,23 @@ export default function ContentList({ contents: initialContents }: ContentListPr
           className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
         >
           Create Content
-        </Link>
-      </div>
-    )
+  return (
+    <>
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false)
+          setContentToDelete(null)
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Content"
+        message="Are you sure you want to delete this content? This action cannot be undone."
+        confirmText="Delete"
+        isLoading={deletingId !== null}
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {contents.map((content) => (
   }
 
   return (
@@ -117,25 +139,22 @@ export default function ContentList({ contents: initialContents }: ContentListPr
           <p className="text-gray-600 text-sm mb-4 line-clamp-3">
             {content.content}
           </p>
-
-          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-            <div className="flex items-center gap-4 text-xs text-gray-500">
-              <div className="flex items-center gap-1">
-                <FileText className="h-4 w-4" />
-                <span>{content._count.socialPosts} posts</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span>{formatDate(content.createdAt)}</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Link
-                href={"/dashboard/content/" + content.id}
-                className="rounded-lg border border-gray-300 p-2 hover:bg-gray-50 cursor-pointer transition-colors"
-                title="View"
+              <button
+                onClick={() => handleDeleteClick(content.id)}
+                disabled={deletingId === content.id}
+                className="rounded-lg border border-red-300 p-2 hover:bg-red-50 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Delete"
               >
-                <Eye className="h-5 w-5 text-gray-600" />
-              </Link>
+                <Trash2 className="h-5 w-5 text-red-600" />
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+      </div>
+    </>
+  )
+}             </Link>
               <button
                 onClick={() => handleDelete(content.id)}
                 disabled={deletingId === content.id}
