@@ -27,6 +27,7 @@ export default function ContentList({ contents: initialContents }: ContentListPr
   const [contentToDelete, setContentToDelete] = useState<string | null>(null)
   const toast = useToast()
   const router = useRouter()
+
   const contentTypeLabels: Record<string, string> = {
     BLOG_POST: "Blog Post",
     SOCIAL_MEDIA: "Social Media",
@@ -92,6 +93,11 @@ export default function ContentList({ contents: initialContents }: ContentListPr
           className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
         >
           Create Content
+        </Link>
+      </div>
+    )
+  }
+
   return (
     <>
       <ConfirmModal
@@ -109,68 +115,63 @@ export default function ContentList({ contents: initialContents }: ContentListPr
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {contents.map((content) => (
-  }
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {contents.map((content) => (
-        <div
-          key={content.id}
-          className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
-        >
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <span className={"px-3 py-1 rounded-full text-xs font-medium " + (contentTypeColors[content.type] || "bg-gray-100 text-gray-800")}>
-                  {contentTypeLabels[content.type] || content.type}
-                </span>
-                {content.folder && (
-                  <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
-                    {content.folder.name}
+          <div
+            key={content.id}
+            className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={"px-3 py-1 rounded-full text-xs font-medium " + (contentTypeColors[content.type] || "bg-gray-100 text-gray-800")}>
+                    {contentTypeLabels[content.type] || content.type}
                   </span>
-                )}
+                  {content.folder && (
+                    <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                      {content.folder.name}
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                  {content.title}
+                </h3>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                {content.title}
-              </h3>
             </div>
-          </div>
 
-          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-            {content.content}
-          </p>
-              <button
-                onClick={() => handleDeleteClick(content.id)}
-                disabled={deletingId === content.id}
-                className="rounded-lg border border-red-300 p-2 hover:bg-red-50 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Delete"
-              >
-                <Trash2 className="h-5 w-5 text-red-600" />
-              </button>
+            <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+              {content.content}
+            </p>
+
+            <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+              <div className="flex items-center gap-4 text-xs text-gray-500">
+                <div className="flex items-center gap-1">
+                  <FileText className="h-4 w-4" />
+                  <span>{content._count.socialPosts} posts</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span>{formatDate(content.createdAt)}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={"/dashboard/content/" + content.id}
+                  className="rounded-lg border border-gray-300 p-2 hover:bg-gray-50 cursor-pointer transition-colors"
+                  title="View"
+                >
+                  <Eye className="h-5 w-5 text-gray-600" />
+                </Link>
+                <button
+                  onClick={() => handleDeleteClick(content.id)}
+                  disabled={deletingId === content.id}
+                  className="rounded-lg border border-red-300 p-2 hover:bg-red-50 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Delete"
+                >
+                  <Trash2 className="h-5 w-5 text-red-600" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
       </div>
     </>
-  )
-}             </Link>
-              <button
-                onClick={() => handleDelete(content.id)}
-                disabled={deletingId === content.id}
-                className="rounded-lg border border-red-300 p-2 hover:bg-red-50 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Delete"
-              >
-                {deletingId === content.id ? (
-                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
-                ) : (
-                  <Trash2 className="h-5 w-5 text-red-600" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
   )
 }
