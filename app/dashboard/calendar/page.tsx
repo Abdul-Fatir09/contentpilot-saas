@@ -1,9 +1,10 @@
 'use client';
 
-import { Calendar, Clock, Plus } from 'lucide-react';
+import { Calendar, Clock, Plus, Pencil, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ToastContainer';
 import SchedulePostModal from './SchedulePostModal';
+import EditPostModal from './EditPostModal';
 
 interface ScheduledPost {
   id: string
@@ -21,6 +22,8 @@ export default function CalendarPage() {
   const toast = useToast();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<ScheduledPost | null>(null);
   const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +41,38 @@ export default function CalendarPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    if (!confirm('Are you sure you want to delete this scheduled post?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/social/posts/${postId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete post');
+      }
+
+      toast.success('Scheduled post deleted');
+      fetchScheduledPosts();
+    } catch (error) {
+      toast.error('Failed to delete post');
+    }
+  };
+
+  const handleEditPost = (post: ScheduledPost) => {
+    setSelectedPost(post);
+    setShowEditModal(true);
+  };
+
+  const handleEditSuccess = () => {
+    fetchScheduledPosts();
+    setShowEditModal(false);
+    setSelectedPost(null);
   };
 
   const goToPreviousMonth = () => {
@@ -119,11 +154,6 @@ export default function CalendarPage() {
 
   return (
     <div className="space-y-6">
-      <SchedulePostModal 
-        isOpen={showScheduleModal} 
-        onClose={() => setShowScheduleModal(false)} 
-      />
-
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -256,11 +286,45 @@ export default function CalendarPage() {
                     })} • {post.platform} • @{post.socialAccount.accountName}
                   </p>
                 </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEditPost(post)}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    title="Edit post"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeletePost(post.id)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Delete post"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Modals */}
+      <SchedulePostModal 
+        isOpen={showScheduleModal} 
+        onClose={() => {
+          setShowScheduleModal(false);
+          fetchScheduledPosts();
+        }} 
+      />
+      <EditPostModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setSelectedPost(null);
+        }}
+        post={selectedPost}
+        onSuccess={handleEditSuccess}
+      />
     </div>
   );
 }

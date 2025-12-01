@@ -1,12 +1,29 @@
 'use client';
 
 import { Check, Sparkles, Zap, Crown, Rocket } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ToastContainer';
 
 export default function PricingPage() {
   const toast = useToast();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
+  const [currentPlan, setCurrentPlan] = useState<string>('FREE');
+
+  useEffect(() => {
+    fetchCurrentSubscription();
+  }, []);
+
+  const fetchCurrentSubscription = async () => {
+    try {
+      const response = await fetch('/api/subscription');
+      const data = await response.json();
+      if (data.subscription) {
+        setCurrentPlan(data.subscription.tier);
+      }
+    } catch (error) {
+      console.error('Failed to fetch subscription:', error);
+    }
+  };
 
   const plans = [
     {
@@ -200,15 +217,29 @@ export default function PricingPage() {
                 {/* CTA Button */}
                 <button
                   onClick={() => handleUpgrade(plan.name)}
-                  className={`w-full py-3 px-4 rounded-xl font-semibold transition-all cursor-pointer mb-6 ${
-                    plan.popular
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg hover:shadow-purple-500/50'
+                  disabled={(plan.name === 'Free' && currentPlan === 'FREE') || 
+                           (plan.name === 'Starter' && currentPlan === 'STARTER') || 
+                           (plan.name === 'Professional' && currentPlan === 'PRO') || 
+                           (plan.name === 'Enterprise' && currentPlan === 'AGENCY')}
+                  className={`w-full py-3 px-4 rounded-xl font-semibold transition-all mb-6 ${
+                    (plan.name === 'Free' && currentPlan === 'FREE') || 
+                    (plan.name === 'Starter' && currentPlan === 'STARTER') || 
+                    (plan.name === 'Professional' && currentPlan === 'PRO') || 
+                    (plan.name === 'Enterprise' && currentPlan === 'AGENCY')
+                      ? 'bg-green-100 text-green-700 border-2 border-green-500 cursor-default'
+                      : plan.popular
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg hover:shadow-purple-500/50 cursor-pointer'
                       : plan.name === 'Free'
                       ? 'bg-gray-100 text-gray-600 cursor-default'
-                      : 'bg-gray-900 text-white hover:bg-gray-800'
+                      : 'bg-gray-900 text-white hover:bg-gray-800 cursor-pointer'
                   }`}
                 >
-                  {plan.cta}
+                  {(plan.name === 'Free' && currentPlan === 'FREE') || 
+                   (plan.name === 'Starter' && currentPlan === 'STARTER') || 
+                   (plan.name === 'Professional' && currentPlan === 'PRO') || 
+                   (plan.name === 'Enterprise' && currentPlan === 'AGENCY')
+                    ? '✓ Current Plan'
+                    : plan.cta}
                 </button>
 
                 {/* Features */}
