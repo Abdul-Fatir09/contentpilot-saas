@@ -1,11 +1,12 @@
 "use client"
 
 import { AlertTriangle, X } from "lucide-react"
+import { useState } from "react"
 
 interface ConfirmModalProps {
   isOpen: boolean
   onClose: () => void
-  onConfirm: () => void
+  onConfirm: () => void | Promise<void>
   title: string
   message: string
   confirmText?: string
@@ -21,7 +22,21 @@ export function ConfirmModal({
   confirmText = "Delete",
   confirmColor = "red"
 }: ConfirmModalProps) {
+  const [loading, setLoading] = useState(false)
+
   if (!isOpen) return null
+
+  const handleConfirm = async () => {
+    setLoading(true)
+    try {
+      await onConfirm()
+      onClose()
+    } catch (error) {
+      console.error('Confirmation action failed:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm" onClick={onClose}>
@@ -32,7 +47,8 @@ export function ConfirmModal({
           </div>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
+            disabled={loading}
+            className="p-1 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -44,22 +60,24 @@ export function ConfirmModal({
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold transition-colors"
+            disabled={loading}
+            className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
-            onClick={() => {
-              onConfirm()
-              onClose()
-            }}
-            className={`flex-1 px-4 py-3 text-white rounded-xl font-semibold transition-colors ${
+            onClick={handleConfirm}
+            disabled={loading}
+            className={`flex-1 px-4 py-3 text-white rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
               confirmColor === 'red' 
                 ? 'bg-red-600 hover:bg-red-700' 
                 : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
-            {confirmText}
+            {loading && (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            )}
+            {loading ? 'Deleting...' : confirmText}
           </button>
         </div>
       </div>

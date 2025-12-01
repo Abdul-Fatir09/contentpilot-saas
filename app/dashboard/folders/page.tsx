@@ -1,13 +1,14 @@
 'use client';
 
 import { Folder, Plus, Edit2, Trash2, FolderOpen } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ToastContainer';
 import { ConfirmModal } from '@/components/ConfirmModal';
 
 export default function FoldersPage() {
   const toast = useToast();
   const [folders, setFolders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -15,48 +16,96 @@ export default function FoldersPage() {
   const [newFolderName, setNewFolderName] = useState('');
   const [newFolderColor, setNewFolderColor] = useState('blue');
   const [newFolderDescription, setNewFolderDescription] = useState('');
+  const [saving, setSaving] = useState(false);
 
-  const handleCreateFolder = () => {
-    if (!newFolderName.trim()) {
-      toast.warning('Please enter a folder name');
-      return;
+  useEffect(() => {
+    fetchFolders();
+  }, []);
+
+  const fetchFolders = async () => {
+    try {
+      const res = await fetch('/api/folders');
+      if (!res.ok) throw new Error('Failed to fetch folders');
+      const data = await res.json();
+      setFolders(data.folders || data);
+    } catch (error) {
+      console.error('Error fetching folders:', error);
+      toast.error('Failed to load folders');
+    } finally {
+      setLoading(false);
     }
-    
-    const newFolder = {
-      id: Date.now().toString(),
-      name: newFolderName,
-      description: newFolderDescription,
-      color: newFolderColor,
-      createdAt: new Date().toISOString(),
-      _count: { contents: 0 }
-    };
-    
-    setFolders([...folders, newFolder]);
-    setNewFolderName('');
-    setNewFolderDescription('');
-    setNewFolderColor('blue');
-    setShowCreateModal(false);
-    toast.success(`Folder "${newFolderName}" created successfully!`);
   };
 
-  const handleEditFolder = () => {
+  const handleCreateFolder = async () => {
     if (!newFolderName.trim()) {
       toast.warning('Please enter a folder name');
       return;
     }
     
-    setFolders(folders.map(f => 
-      f.id === selectedFolder.id 
-        ? { ...f, name: newFolderName, description: newFolderDescription, color: newFolderColor }
-        : f
-    ));
+    setSaving(true);
+    try {
+      const res = await fetch('/api/folders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newFolderName,
+          description: newFolderDescription,
+          color: newFolderColor,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to create folder');
+      
+      const newFolder = await res.json();
+      setFolders([newFolder, ...folders]);
+      setNewFolderName('');
+      setNewFolderDescription('');
+      setNewFolderColor('blue');
+      setShowCreateModal(false);
+      toast.success(`Folder "${newFolderName}" created successfully!`);
+    } catch (error) {
+      console.error('Error creating folder:', error);
+      toast.error('Failed to create folder');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleEditFolder = async () => {
+    if (!newFolderName.trim()) {
+      toast.warning('Please enter a folder name');
+      return;
+    }
     
-    toast.success(`Folder "${newFolderName}" updated successfully!`);
-    setShowEditModal(false);
-    setSelectedFolder(null);
-    setNewFolderName('');
-    setNewFolderDescription('');
-    setNewFolderColor('blue');
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/folders/${selectedFolder.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newFolderName,
+          description: newFolderDescription,
+          color: newFolderColor,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to update folder');
+      
+      const updatedFolder = await res.json();
+      setFolders(folders.map(f => f.id === updatedFolder.id ? updatedFolder : f));
+      
+      toast.success(`Folder "${newFolderName}" updated successfully!`);
+      setShowEditModal(false);
+      setSelectedFolder(null);
+      setNewFolderName('');
+      setNewFolderDescription('');
+      setNewFolderColor('blue');
+    } catch (error) {
+      console.error('Error updating folder:', error);
+      toast.error('Failed to update folder');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const openEditModal = (folder: any) => {
@@ -67,12 +116,34 @@ export default function FoldersPage() {
     setShowEditModal(true);
   };
 
-  const handleDeleteFolder = () => {
-    if (selectedFolder) {
+  const handleDeleteFolder = async () => {
+    if (!selectedFolder) return;
+    
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/folders/${selectedFolder.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) throw new Error('Failed to delete folder');
+      
       setFolders(folders.filter(f => f.id !== selectedFolder.id));
       toast.success(`Folder "${selectedFolder.name}" deleted successfully!`);
+    } catch (error) {
+      console.error('Error deleting folder:', error);
+      toast.error('Failed to delete folder');
+    } finally {
+      setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -281,16 +352,20 @@ export default function FoldersPage() {
             <div className="flex gap-3 mt-8">
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold cursor-pointer transition-colors"
+                disabled={saving}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateFolder}
-                disabled={!newFolderName.trim()}
-                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                disabled={!newFolderName.trim() || saving}
+                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
-                Create Folder
+                {saving && (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                )}
+                {saving ? 'Creating...' : 'Create Folder'}
               </button>
             </div>
           </div>
@@ -365,16 +440,20 @@ export default function FoldersPage() {
                   setNewFolderDescription('');
                   setNewFolderColor('blue');
                 }}
-                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold cursor-pointer transition-colors"
+                disabled={saving}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 onClick={handleEditFolder}
-                disabled={!newFolderName.trim()}
-                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                disabled={!newFolderName.trim() || saving}
+                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
-                Save Changes
+                {saving && (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                )}
+                {saving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>
