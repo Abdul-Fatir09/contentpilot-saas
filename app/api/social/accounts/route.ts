@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { checkLimit, getPlanDisplayName } from '@/lib/subscription-limits'
 import { z } from 'zod'
 
 const socialAccountSchema = z.object({
@@ -68,29 +69,30 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = socialAccountSchema.parse(body)
 
-    // Check subscription tier for platform limits
+    // Get user's subscription
     const subscription = await prisma.subscription.findUnique({
       where: { userId: session.user.id },
     })
 
-    if (!subscription) {
-      return NextResponse.json({ error: 'No subscription found' }, { status: 403 })
-    }
+    const tier = subscription?.tier || 'FREE'
 
+    // Check current social account count
     const platformCount = await prisma.socialAccount.count({
       where: { userId: session.user.id, isActive: true },
     })
 
-    const platformLimits: Record<string, number> = {
-      FREE: 1,
-      STARTER: 3,
-      PRO: 10,
-      AGENCY: 999,
-    }
+    const limitCheck = checkLimit(tier, 'socialAccounts', platformCount)
 
-    if (platformCount >= platformLimits[subscription.tier]) {
+    if (!limitCheck.allowed) {
       return NextResponse.json(
-        { error: 'Platform limit reached for your subscription tier' },
+        {
+          error: `Social account limit reached. You have ${limitCheck.current}/${limitCheck.limit} accounts connected.`,
+          limit: limitCheck.limit,
+          used: limitCheck.current,
+          tier: tier,
+          upgradeRequired: limitCheck.upgradeRequired,
+          upgradeTo: limitCheck.upgradeRequired ? getPlanDisplayName(limitCheck.upgradeRequired) : undefined,
+        },
         { status: 403 }
       )
     }

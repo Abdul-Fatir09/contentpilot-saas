@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Sparkles, FileText, Twitter, Mail, ShoppingBag, Megaphone, Calendar, Send } from "lucide-react"
 import { useToast } from "@/components/ToastContainer"
 import PostToSocial from "../[id]/PostToSocial"
+import UpgradeModal from "@/components/UpgradeModal"
 
 function NewContentForm() {
   const router = useRouter()
@@ -13,6 +14,10 @@ function NewContentForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [showScheduleModal, setShowScheduleModal] = useState(false)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [upgradeMessage, setUpgradeMessage] = useState("")
+  const [upgradeTier, setUpgradeTier] = useState("")
+  const [currentTier, setCurrentTier] = useState("Free")
   
   const [formData, setFormData] = useState({
     type: "blog" as "blog" | "social" | "ad" | "email" | "product",
@@ -100,11 +105,24 @@ function NewContentForm() {
       const data = await response.json()
 
       if (!response.ok) {
+        // Check if it's a limit error (429 = rate limit)
+        if (response.status === 429 && data.upgradeRequired) {
+          setUpgradeMessage(data.error || "You've reached your daily generation limit.")
+          setUpgradeTier(data.upgradeTo || "Starter")
+          setCurrentTier(data.tier || "Free")
+          setShowUpgradeModal(true)
+          return
+        }
         throw new Error(data.error || "Failed to generate content")
       }
 
       setGeneratedContent(data.content)
-      toast.success("Content generated and saved to library!")
+      
+      // Show usage info
+      const usageMsg = data.generationsLimit === -1 
+        ? "Content generated and saved to library!"
+        : `Content generated! ${data.generationsLeft} generations left today.`
+      toast.success(usageMsg)
       
       // Mark onboarding step as complete
       fetch("/api/onboarding", {
@@ -418,6 +436,16 @@ function NewContentForm() {
           )}
         </div>
       </div>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        message={upgradeMessage}
+        currentTier={currentTier}
+        suggestedTier={upgradeTier}
+        feature="AI Content Generation"
+      />
     </div>
   )
 }

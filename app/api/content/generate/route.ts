@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { generateContent, GenerateContentParams } from '@/lib/ai/content-generator'
+import { checkLimit, getPlanDisplayName } from '@/lib/subscription-limits'
 import { z } from 'zod'
 
 const generateSchema = z.object({
@@ -27,17 +28,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = generateSchema.parse(body)
 
-    // Check subscription limits
+    // Get user's subscription
     const subscription = await prisma.subscription.findUnique({
       where: { userId: session.user.id },
     })
 
-    if (!subscription) {
-      return NextResponse.json(
-        { error: 'No subscription found' },
-        { status: 403 }
-      )
-    }
+    const tier = subscription?.tier || 'FREE'
 
     // Check daily generation limit
     const today = new Date()
@@ -52,16 +48,17 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    if (
-      subscription.tier !== 'PRO' &&
-      subscription.tier !== 'AGENCY' &&
-      todayGenerations >= subscription.dailyGenerationsLimit
-    ) {
+    const limitCheck = checkLimit(tier, 'dailyGenerations', todayGenerations)
+
+    if (!limitCheck.allowed) {
       return NextResponse.json(
         {
-          error: 'Daily generation limit reached',
-          limit: subscription.dailyGenerationsLimit,
-          used: todayGenerations,
+          error: `Daily generation limit reached. You've used ${limitCheck.current}/${limitCheck.limit} generations today.`,
+          limit: limitCheck.limit,
+          used: limitCheck.current,
+          tier: tier,
+          upgradeRequired: limitCheck.upgradeRequired,
+          upgradeTo: limitCheck.upgradeRequired ? getPlanDisplayName(limitCheck.upgradeRequired) : undefined,
         },
         { status: 429 }
       )
@@ -111,20 +108,17 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Update generation count
-    await prisma.subscription.update({
-      where: { userId: session.user.id },
-      data: {
-        dailyGenerations: todayGenerations + 1,
-      },
-    })
+    // Calculate remaining generations
+    const remaining = limitCheck.limit === -1 
+      ? 'Unlimited' 
+      : limitCheck.limit - todayGenerations - 1
 
     return NextResponse.json({
       content: savedContent,
-      generationsLeft:
-        subscription.tier === 'PRO' || subscription.tier === 'AGENCY'
-          ? 'Unlimited'
-          : subscription.dailyGenerationsLimit - todayGenerations - 1,
+      generationsUsed: todayGenerations + 1,
+      generationsLimit: limitCheck.limit,
+      generationsLeft: remaining,
+      tier: tier,
     })
   } catch (error) {
     if (error instanceof z.ZodError) {

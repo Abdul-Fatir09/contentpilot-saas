@@ -32,7 +32,7 @@ export default function PricingPage() {
     },
     {
       name: 'Starter',
-      price: { monthly: 29, annual: 290 },
+      price: { monthly: 19.99, annual: 191.90 },
       description: 'Great for solo content creators',
       icon: Zap,
       gradient: 'from-blue-500 to-cyan-600',
@@ -55,7 +55,7 @@ export default function PricingPage() {
     },
     {
       name: 'Professional',
-      price: { monthly: 79, annual: 790 },
+      price: { monthly: 69.99, annual: 671.90 },
       description: 'Perfect for growing businesses',
       icon: Crown,
       gradient: 'from-purple-500 to-pink-600',
@@ -96,7 +96,7 @@ export default function PricingPage() {
         'Custom contracts',
       ],
       limitations: [],
-      cta: 'Contact Sales',
+      cta: 'Upgrade to Enterprise',
       popular: false,
     },
   ];
@@ -104,8 +104,6 @@ export default function PricingPage() {
   const handleUpgrade = (planName: string) => {
     if (planName === 'Free') {
       toast.info('You are currently on the Free plan');
-    } else if (planName === 'Enterprise') {
-      toast.info('Contact our sales team at sales@contentpilot.com for Enterprise pricing');
     } else {
       toast.success(`Upgrade to ${planName} plan - Payment integration coming soon!`);
     }
@@ -142,7 +140,7 @@ export default function PricingPage() {
           >
             Annual
             <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-              Save 17%
+              Save 20%
             </span>
           </button>
         </div>

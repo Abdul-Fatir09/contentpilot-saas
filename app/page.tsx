@@ -183,15 +183,15 @@ export default async function Home() {
               },
               {
                 name: "Starter",
-                price: "$15",
+                price: "$19.99",
                 period: "/month",
-                features: ["50 generations/day", "3 platforms", "Basic analytics"],
+                features: ["100 generations/day", "5 platforms", "Advanced analytics"],
                 cta: "Get Started",
                 gradient: "from-blue-500 to-cyan-600",
               },
               {
                 name: "Pro",
-                price: "$39",
+                price: "$69.99",
                 period: "/month",
                 features: ["Unlimited generations", "All platforms", "Full analytics", "A/B testing"],
                 popular: true,
@@ -200,7 +200,7 @@ export default async function Home() {
               },
               {
                 name: "Agency",
-                price: "$79",
+                price: "$199",
                 period: "/month",
                 features: ["Everything in Pro", "Multiple brands", "Team collaboration", "API access"],
                 cta: "Go Agency",

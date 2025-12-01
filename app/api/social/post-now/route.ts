@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     // Post to each platform immediately
     const results = await Promise.allSettled(
       socialAccounts.map(async (account: any) => {
-        // Create social post record with PUBLISHING status
+        // Create social post record with SCHEDULED status (will update to PUBLISHED after posting)
         const socialPost = await prisma.socialPost.create({
           data: {
             contentId: content.id,
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
             platform: account.platform,
             postText: postText || content.content,
             mediaUrls: [],
-            status: 'PUBLISHING',
+            status: 'SCHEDULED',
             scheduledFor: new Date(),
           },
         })
