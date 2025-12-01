@@ -20,13 +20,26 @@ export async function GET() {
     }
 
     const accounts = await prisma.socialAccount.findMany({
-      where: { userId: session.user.id },
+      where: { 
+        userId: session.user.id,
+        isActive: true 
+      },
       select: {
         id: true,
         platform: true,
         accountName: true,
+        accountId: true,
+        profileImage: true,
         isActive: true,
         createdAt: true,
+        _count: {
+          select: {
+            socialPosts: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     })
 
