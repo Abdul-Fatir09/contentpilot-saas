@@ -78,7 +78,7 @@ export class TwitterOAuth {
 
 // Facebook OAuth
 export class FacebookOAuth {
-  private config: OAuthConfig
+  protected config: OAuthConfig
 
   constructor(redirectUri: string) {
     this.config = {
