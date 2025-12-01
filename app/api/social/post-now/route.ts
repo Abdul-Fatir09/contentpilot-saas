@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
             platform: account.platform,
             postText: postText || content.content,
             mediaUrls: [],
-            status: 'PUBLISHING',
+            status: 'SCHEDULED',
             scheduledFor: new Date(),
           },
         })
